@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<title>UI Password Strength Meter Example</title>
+		<link rel="stylesheet" media="screen" href="../libs/theme/jquery-ui-themeroller.css" />
+	</head>
+	<body>
+		<form>
+			<fieldset>
+				<legend>Please type in your password</legend>
+				<input type="password" id="password" />
+			</fieldset>
+		</form>
+		
+		<script type="text/javascript" src="../libs/jquery.js"></script>
+		<script type="text/javascript" src="../libs/ui/ui.core.js"></script>
+		<script type="text/javascript" src="../libs/ui/ui.progressbar.js"></script>
+		<script type="text/javascript" src="../org/ifies/ui.password.js"></script>
+		
+		
+		<script type="text/javascript">
+			jQuery(document).ready(function(){
+				jQuery('#password').password();
+			});
+			
+		</script>
+	</body>
+</html>
