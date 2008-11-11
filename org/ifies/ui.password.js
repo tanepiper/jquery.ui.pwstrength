@@ -20,12 +20,9 @@
 			
 			self.element.keyup(function(){
 				self.calculateScore($(this).val());	
-			})
-			
-			
+			});
 		},
 		'calculateScore': function(word){
-
 			var self = this;
 			var options = this.options;
 			
@@ -42,6 +39,7 @@
 				}
 			});
 			this._getBarSettings(totalScore);
+			return totalScore;
 	 	},
 		'_getBarSettings' : function(score) {
 			var self = this;
@@ -65,9 +63,21 @@
 		},
 		'_progressWidget': function() {
 			return '<div class="meter></div>';
+		},
+		'addRule': function (name, method, score, active) {
+			this.options.rules[name] = active;
+			this.options.ruleScores[name] = score;
+			this.options.validationRules[name] = method;
+		},
+		'changeScore': function(rule, score) {
+			this.options.ruleScores[rule] = score;
+		},
+		'ruleActive': function (rule, active) {
+			this.options.rules[rule] = active;
 		}
 	});
 	
+	$.ui.password.getter = "calculateScore";
 	$.ui.password.defaults = {
   	'settings': {
 			'width': '100px',
