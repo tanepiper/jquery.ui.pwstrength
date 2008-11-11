@@ -1,3 +1,16 @@
+/*
+ * jQuery UI Progressbar @VERSION
+ *
+ * Copyright (c) 2008 Tane Piper
+ * Dual licensed under the MIT (MIT-LICENSE.txt)
+ * and GPL (GPL-LICENSE.txt) licenses.
+ *
+ * http://docs.jquery.com/UI/Progressbar
+ *
+ * Depends:
+ *   ui.core.js
+ *   ui.progressbar.js
+ */
 (function($){
 	
 	$.widget('ui.password', {
