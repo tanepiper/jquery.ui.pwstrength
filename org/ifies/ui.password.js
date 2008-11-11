@@ -26,8 +26,13 @@
 					'role': 'password',
 			});
 			
+			$.extend(this,{
+				identifier: id,
+				wordToShort: true
+			});
+			
 			$(this._progressWidget()).insertAfter(self.element);
-			$('.meter').progressbar({
+			$('.ui-password-meter').progressbar({
 				'range':false
 			});
 			
@@ -75,7 +80,7 @@
 			$('.meter').progressbar('progress', barOptions.barLength);
 		},
 		'_progressWidget': function() {
-			return '<div class="meter></div>';
+			return '<div class="ui-password-meter></div>';
 		},
 		'addRule': function (name, method, score, active) {
 			this.options.rules[name] = active;
@@ -132,9 +137,10 @@
 				var options = ui.options;
 				var wordlen = word.length;
 				var lenScore = Math.pow(wordlen, options.settings.raisePower);
-  
+				ui.wordToShort = false;
 				if (wordlen < options.settings.minChar) {
   				lenScore = (lenScore - 100);
+					ui.wordToShort = true;
   			}
   			return lenScore;
   		},
