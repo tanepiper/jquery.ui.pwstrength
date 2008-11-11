@@ -77,7 +77,7 @@
 			} else if (score >= options.settings.scores[3]) {
 				barOptions.barLength = 100;
 			}
-			$('.meter').progressbar('progress', barOptions.barLength);
+			$('.ui-password-meter').progressbar('progress', barOptions.barLength);
 		},
 		'_progressWidget': function() {
 			return '<div class="ui-password-meter></div>';
