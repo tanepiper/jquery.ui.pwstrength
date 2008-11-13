@@ -80,7 +80,7 @@
 			$('.ui-password-meter').progressbar('progress', barOptions.barLength);
 		},
 		'_progressWidget': function() {
-			return '<div class="ui-password-meter></div>';
+			return '<div class="ui-password-message"></div><div class="ui-password-meter></div>';
 		},
 		'addRule': function (name, method, score, active) {
 			this.options.rules[name] = active;
@@ -106,10 +106,12 @@
   		'scores': [20, 30, 43, 50],
   		'verdicts': ['Weak', 'Normal', 'Medium', 'Strong', 'Very Strong'],
   		'raisePower': 1.4,
-  		'debug': false
+  		'debug': false,
+			'usernameField':'#username'
   	},
   	'ruleScores': {
   		'wordLength': 0,
+			'wordSimilarToUsername':0,
   		'wordLowercase': 1,
   		'wordUppercase': 3,
   		'wordOneNumber': 3,
@@ -122,6 +124,7 @@
   	},
   	'rules': {
   		'wordLength': true,
+			'wordSimilarToUsername':true,
   		'wordLowercase': true,
   		'wordUppercase': true,
   		'wordOneNumber': true,
@@ -138,12 +141,27 @@
 				var wordlen = word.length;
 				var lenScore = Math.pow(wordlen, options.settings.raisePower);
 				ui.wordToShort = false;
+		
 				if (wordlen < options.settings.minChar) {
   				lenScore = (lenScore - 100);
 					ui.wordToShort = true;
-  			}
+					jQuery('.ui-password-message').text('Password to short');
+  			} else {
+					jQuery('.ui-password-message').text('');
+				}
   			return lenScore;
   		},
+			'wordSimilarToUsername': function(ui, word, score) {
+				var options = ui.options;
+				var username = jQuery(options.settings.usernameField).val();
+				if (username && word.toLowerCase().match(username.toLowerCase())) {
+					return -100;
+					jQuery('.ui-password-message').text('Password to similar to username');
+				} else {
+					jQuery('.ui-password-message').text('');
+				}
+				
+			},
   		'wordLowercase': function(ui, word, score){
   			return word.match(/[a-z]/) && score;
   		},
