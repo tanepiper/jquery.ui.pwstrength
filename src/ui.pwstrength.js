@@ -13,43 +13,49 @@
  */
 (function( $ ) {
 
-$.widget('ui.pwstrength', {
-  options: {
-    displayMinChar : true,
-    minChar : 8,
-    minCharText : 'You must enter a minimum of %d characters',
-    colors : ["#f00", "#c06", "#f60", "#3c0", "#3f0"],
-    scores : [20, 30, 43, 50],
-    verdicts : ['Weak', 'Normal', 'Medium', 'Strong', 'Very Strong'],
-    raisePower : 1.4,
-    debug : false,
-    usernameField :'#username'
-  },
-  _create: function() {
-    var id = ((new Date()).getTime() + Math.random());
+  $.widget('ui.pwstrength', {
 
-    this.element
+    options: {
+      displayMinChar : true,
+      minChar : 8,
+      minCharText : 'You must enter a minimum of %d characters',
+      colors : ["#f00", "#c06", "#f60", "#3c0", "#3f0"],
+      scores : [20, 30, 43, 50],
+      verdicts : ['Weak', 'Normal', 'Medium', 'Strong', 'Very Strong'],
+      raisePower : 1.4,
+      debug : false,
+      usernameField :'#username'
+    },
+
+    _create: function() {
+      var self = this,
+      doc = this.element[ 0 ].ownerDocument;
+      
+      var id = ((new Date()).getTime() + Math.random());
+
+      this.element
       .addClass("ui-password ui-widget ui-widget-content")
       .width(this.options.settings.width)
       .attr({
         'role': 'password'
-    });
+      });
 
-      $.extend(this,{
+      $.extend(this, {
         identifier: id,
         wordToShort: true
       });
 
-      $(this._progressWidget()).insertAfter(self.element);
+      $(this._progressWidget()).insertAfter(this.element);
       $('.ui-password-meter').progressbar({
-        'range':false
+        value: 0
       });
 
       this.element.keyup(function(){
         this.calculateScore($(this).val());
       });
     },
-    'calculateScore': function(word){
+
+    calculateScore : function(word){
       var self = this;
       var options = this.options;
 
@@ -68,7 +74,8 @@ $.widget('ui.pwstrength', {
       this._getBarSettings(totalScore);
       return totalScore;
     },
-    '_getBarSettings' : function(score) {
+
+    _getBarSettings : function( score ) {
       var self = this;
       var options = this.options;
 
@@ -88,26 +95,28 @@ $.widget('ui.pwstrength', {
       }
       $('.ui-password-meter').progressbar('progress', barOptions.barLength);
     },
-    '_progressWidget': function() {
+
+    _progressWidget : function() {
       return '<div class="ui-password-message"></div><div class="ui-password-meter></div>';
     },
-    'addRule': function (name, method, score, active) {
+
+    addRule : function ( name, method, score, active ) {
       this.options.rules[name] = active;
       this.options.ruleScores[name] = score;
       this.options.validationRules[name] = method;
     },
-    'changeScore': function(rule, score) {
+    changeScore : function( rule, score ) {
       this.options.ruleScores[rule] = score;
     },
-    'ruleActive': function (rule, active) {
+    ruleActive : function (rule, active) {
       this.options.rules[rule] = active;
     }
   });
 
   $.ui.password.getter = "calculateScore";
 
-$.extend( $.ui.pwstrength, {
-  ruleScores : {
+  $.extend( $.ui.pwstrength, {
+    ruleScores : {
       wordLength : 0,
       wordSimilarToUsername : 0,
       wordLowercase : 1,
@@ -188,7 +197,7 @@ $.extend( $.ui.pwstrength, {
         return word.match(/([a-zA-Z0-9].*[!,@,#,$,%,\^,&,*,?,_,~])|([!,@,#,$,%,\^,&,*,?,_,~].*[a-zA-Z0-9])/) && score;
       }
     }
-});
+  });
 
 
 }(jQuery));
