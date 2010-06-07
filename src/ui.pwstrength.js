@@ -13,18 +13,18 @@
  */
 (function( $ ) {
 
-  $.widget('ui.pwstrength', {
+  $.widget("ui.pwstrength", {
 
     options: {
       displayMinChar : true,
       minChar : 8,
-      minCharText : 'You must enter a minimum of %d characters',
+      minCharText : "You must enter a minimum of %d characters",
       colors : ["#f00", "#c06", "#f60", "#3c0", "#3f0"],
       scores : [20, 30, 43, 50],
-      verdicts : ['Weak', 'Normal', 'Medium', 'Strong', 'Very Strong'],
+      verdicts : ["Weak", "Normal", "Medium", "Strong", "Very Strong"],
       raisePower : 1.4,
       debug : false,
-      usernameField :'#username'
+      usernameField :"#username"
     },
 
     _create: function() {
@@ -34,9 +34,9 @@
       var id = ((new Date()).getTime() + Math.random());
 
       this.element
-      .addClass("ui-password ui-widget ui-widget-content")
+      .addClass("ui-password")
       .attr({
-        'role': 'password'
+        "role": "password"
       })
       .bind("keyup.pwstrength", function( event ){
         self._calculateScore(self.element.val());
@@ -48,7 +48,7 @@
       });
 
       $(this._progressWidget()).insertAfter(this.element);
-      $('.ui-password-meter').progressbar({
+      $(".ui-password-meter").progressbar({
         value: 0
       });
 
@@ -56,7 +56,14 @@
       //  this.calculateScore($(this).val());
       //});
     },
+    destroy : function() {
 
+      this.element
+        .removeClass( ".ui-password" )
+        .removeAttr( "role" )
+      $.Widget.prototype.destroy.call( this );
+
+    },
     _calculateScore : function(word){
       var self = this;
       var options = this.options;
@@ -64,10 +71,10 @@
       var totalScore = 0;
       var barLength = 0;
 
-      jQuery.each($.ui.pwstrength.rules, function(type, value){
-        if (value === true) {
-          var score = $.ui.pwstrength.ruleScores[type];
-          var result = $.ui.pwstrength.validationRules[type](self, word, score);
+      jQuery.each($.ui.pwstrength.rules, function(rule, active){
+        if (active === true) {
+          var score = $.ui.pwstrength.ruleScores[rule];
+          var result = $.ui.pwstrength.validationRules[rule](self, word, score);
           if (result) {
             totalScore += result;
           }
@@ -94,30 +101,29 @@
       } else if (score >= options.scores[3]) {
         progress_width = 100;
       }
-      console.log(progress_width);
-      $('.ui-password-meter').progressbar('value', progress_width);
+      $(".ui-password-meter").progressbar("value", progress_width);
     },
 
     _progressWidget : function() {
       return '<div class="ui-password-message"></div><div class="ui-password-meter></div>';
-    },
-
-    addRule : function ( name, method, score, active ) {
-      this.options.rules[name] = active;
-      this.options.ruleScores[name] = score;
-      this.options.validationRules[name] = method;
-    },
-    changeScore : function( rule, score ) {
-      this.options.ruleScores[rule] = score;
-    },
-    ruleActive : function (rule, active) {
-      this.options.rules[rule] = active;
     }
   });
 
   //$.ui.password.getter = "calculateScore";
 
   $.extend( $.ui.pwstrength, {
+    addRule : function ( name, method, score, active ) {
+
+      $.ui.pwstrength.rules[name] = active;
+      $.ui.pwstrength.ruleScores[name] = score;
+      $.ui.pwstrength.validationRules[name] = method;
+    },
+    changeScore : function( rule, score ) {
+      $.ui.pwstrength.ruleScores[rule] = score;
+    },
+    ruleActive : function (rule, active) {
+      $.ui.pwstrength.rules[rule] = active;
+    },
     ruleScores : {
       wordLength : 0,
       wordSimilarToUsername : 0,
@@ -154,9 +160,9 @@
         if (wordlen < options.minChar) {
           lenScore = (lenScore - 100);
           ui.wordToShort = true;
-          jQuery('.ui-password-message').text('Password to short');
+          $(".ui-password-message").text("Password to short");
         } else {
-          jQuery('.ui-password-message').text('');
+          $(".ui-password-message").text("");
         }
         return lenScore;
       },
@@ -165,11 +171,11 @@
         var username = jQuery(options.usernameField).val();
         if (username && word.toLowerCase().match(username.toLowerCase())) {
           return -100;
-          jQuery('.ui-password-message').text('Password to similar to username');
+          $(".ui-password-message").text("Password to similar to username");
         } else {
-          jQuery('.ui-password-message').text('');
+          $(".ui-password-message").text("");
         }
-
+        return true;
       },
       wordLowercase : function( ui, word, score ) {
         return word.match(/[a-z]/) && score;
