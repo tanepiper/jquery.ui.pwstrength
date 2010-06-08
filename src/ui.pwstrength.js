@@ -19,6 +19,7 @@
       displayMinChar : true,
       minChar : 8,
       minCharText : "You must enter a minimum of %d characters",
+      progressClass : ['zero', 'twenty-five', 'fifty', 'seventy-five', 'one-hundred'],
       colors : ["#f00", "#c06", "#f60", "#3c0", "#3f0"],
       scores : [20, 30, 43, 50],
       verdicts : ["Weak", "Normal", "Medium", "Strong", "Very Strong"],
@@ -80,28 +81,39 @@
           }
         }
       });
-      this._getBarSettings(totalScore);
+      this._setProgressBar(totalScore);
       return totalScore;
     },
 
-    _getBarSettings : function( score ) {
+    _setProgressBar : function( score ) {
       var self = this;
       var options = this.options;
 
       var progress_width = 0;
 
+      $(".ui-progressbar-value", ".ui-password-meter")[score >= options.scores[0] && score < options.scores[1] ? "addClass" : "removeClass"]("password-" + options.progressClass[1]);
+      $(".ui-progressbar-value", ".ui-password-meter")[score >= options.scores[1] && score < options.scores[2] ? "addClass" : "removeClass"]("password-" + options.progressClass[2]);
+      $(".ui-progressbar-value", ".ui-password-meter")[score >= options.scores[2] && score < options.scores[3] ? "addClass" : "removeClass"]("password-" + options.progressClass[3]);
+      $(".ui-progressbar-value", ".ui-password-meter")[score >= options.scores[3] ? "addClass" : "removeClass"]("password-" + options.progressClass[4]);
+
+      
       if (score < options.scores[0]) {
         progress_width = 0;
+        $(".ui-password-meter").progressbar("value", progress_width).children().html('<span class="password-verdict">' + options.verdicts[0] + '</span>');
       } else if (score >= options.scores[0] && score < options.scores[1]) {
         progress_width = 25
+        $(".ui-password-meter").progressbar("value", progress_width).children().html('<span class="password-verdict">' + options.verdicts[1] + '</span>');
       } else if (score >= options.scores[1] && score < options.scores[2]) {
         progress_width = 50;
+        $(".ui-password-meter").progressbar("value", progress_width).children().html('<span class="password-verdict">' + options.verdicts[2] + '</span>');
       } else if (score >= options.scores[2] && score < options.scores[3]) {
         progress_width = 75;
+        $(".ui-password-meter").progressbar("value", progress_width).children().html('<span class="password-verdict">' + options.verdicts[3] + '</span>');
       } else if (score >= options.scores[3]) {
         progress_width = 100;
+        $(".ui-password-meter").progressbar("value", progress_width).children().html('<span class="password-verdict">' + options.verdicts[4] + '</span>');
       }
-      $(".ui-password-meter").progressbar("value", progress_width);
+      //$(".ui-password-meter").progressbar("value", progress_width);
     },
 
     _progressWidget : function() {
