@@ -1,11 +1,9 @@
 /*
- * jQuery UI Progressbar @VERSION
+ * jQuery UI Password Strength @VERSION
  *
  * Copyright (c) 2008 Tane Piper
  * Dual licensed under the MIT (MIT-LICENSE.txt)
  * and GPL (GPL-LICENSE.txt) licenses.
- *
- * http://docs.jquery.com/UI/Progressbar
  *
  * Depends:
  *   jquery.ui.core.js
@@ -16,31 +14,36 @@
   $.widget("ui.pwstrength", {
 
     options: {
-      displayMinChar : true,
       minChar : 8,
-      minCharText : "You must enter a minimum of %d characters",
+      errorMessages : {
+        password_to_short : "The Password is too short",
+        same_as_username : "Your password cannot be the same as your username"
+      },
       progressClass : ['zero', 'twenty-five', 'fifty', 'seventy-five', 'one-hundred'],
-      colors : ["#f00", "#c06", "#f60", "#3c0", "#3f0"],
-      scores : [20, 30, 43, 50],
+      scores : [17, 26, 40, 50],
       verdicts : ["Weak", "Normal", "Medium", "Strong", "Very Strong"],
+      showVerdicts: true,
       raisePower : 1.4,
-      debug : false,
-      usernameField :"#username"
+      usernameField : "#username",
+      onLoad: undefined,
+      onKeyUp: undefined
     },
 
     _create: function() {
       var self = this,
-      doc = this.element[ 0 ].ownerDocument;
+      options = this.options;
       
       var id = ((new Date()).getTime() + Math.random());
 
       this.element
       .addClass("ui-password")
       .attr({
-        "role": "password"
+        role: "password"
       })
       .bind("keyup.pwstrength", function( event ){
+        $.ui.pwstrength.errors = [];
         self._calculateScore(self.element.val());
+        if ($.isFunction(options.onKeyUp)) options.onKeyUp();
       });
 
       $.extend(this, {
@@ -52,27 +55,21 @@
       $(".ui-password-meter").progressbar({
         value: 0
       });
-
-      //this.element.keyup(function(){
-      //  this.calculateScore($(this).val());
-      //});
+      if(options.showVerdicts) $(".ui-password-meter").children().html('<span class="password-verdict">' + options.verdicts[0] + '</span>');
+      if ($.isFunction(options.onLoad)) options.onLoad();
     },
     destroy : function() {
-
       this.element
         .removeClass( ".ui-password" )
         .removeAttr( "role" )
       $.Widget.prototype.destroy.call( this );
-
     },
     _calculateScore : function(word){
       var self = this;
-      var options = this.options;
 
       var totalScore = 0;
-      var barLength = 0;
 
-      jQuery.each($.ui.pwstrength.rules, function(rule, active){
+      $.each($.ui.pwstrength.rules, function(rule, active){
         if (active === true) {
           var score = $.ui.pwstrength.ruleScores[rule];
           var result = $.ui.pwstrength.validationRules[rule](self, word, score);
@@ -99,31 +96,45 @@
       
       if (score < options.scores[0]) {
         progress_width = 0;
-        $(".ui-password-meter").progressbar("value", progress_width).children().html('<span class="password-verdict">' + options.verdicts[0] + '</span>');
+        $(".ui-password-meter").progressbar("value", progress_width);
+        if(options.showVerdicts) $(".ui-password-meter").children().html('<span class="password-verdict">' + options.verdicts[0] + '</span>');
       } else if (score >= options.scores[0] && score < options.scores[1]) {
         progress_width = 25
-        $(".ui-password-meter").progressbar("value", progress_width).children().html('<span class="password-verdict">' + options.verdicts[1] + '</span>');
+        $(".ui-password-meter").progressbar("value", progress_width);
+        if(options.showVerdicts) $(".ui-password-meter").children().html('<span class="password-verdict">' + options.verdicts[1] + '</span>');
       } else if (score >= options.scores[1] && score < options.scores[2]) {
         progress_width = 50;
-        $(".ui-password-meter").progressbar("value", progress_width).children().html('<span class="password-verdict">' + options.verdicts[2] + '</span>');
+        $(".ui-password-meter").progressbar("value", progress_width);
+        if(options.showVerdicts) $(".ui-password-meter").children().html('<span class="password-verdict">' + options.verdicts[2] + '</span>');
       } else if (score >= options.scores[2] && score < options.scores[3]) {
         progress_width = 75;
-        $(".ui-password-meter").progressbar("value", progress_width).children().html('<span class="password-verdict">' + options.verdicts[3] + '</span>');
+        $(".ui-password-meter").progressbar("value", progress_width);
+        if(options.showVerdicts) $(".ui-password-meter").children().html('<span class="password-verdict">' + options.verdicts[3] + '</span>');
       } else if (score >= options.scores[3]) {
         progress_width = 100;
-        $(".ui-password-meter").progressbar("value", progress_width).children().html('<span class="password-verdict">' + options.verdicts[4] + '</span>');
+        $(".ui-password-meter").progressbar("value", progress_width);
+        if(options.showVerdicts) $(".ui-password-meter").children().html('<span class="password-verdict">' + options.verdicts[4] + '</span>');
       }
       //$(".ui-password-meter").progressbar("value", progress_width);
     },
 
     _progressWidget : function() {
-      return '<div class="ui-password-message"></div><div class="ui-password-meter></div>';
+      return '<div class="ui-password-meter></div>';
     }
   });
 
   //$.ui.password.getter = "calculateScore";
 
   $.extend( $.ui.pwstrength, {
+    errors : [],
+    outputErrorList : function() {
+      var output = '<ul>';
+      $.each($.ui.pwstrength.errors, function(i, item) {
+        output += '<li>' + item + '</li>';
+      });
+      output += '</ul>';
+      return output;
+    },
     addRule : function ( name, method, score, active ) {
 
       $.ui.pwstrength.rules[name] = active;
@@ -137,8 +148,8 @@
       $.ui.pwstrength.rules[rule] = active;
     },
     ruleScores : {
-      wordLength : 0,
-      wordSimilarToUsername : 0,
+      wordLength : -100,
+      wordSimilarToUsername : -100,
       wordLowercase : 1,
       wordUppercase : 3,
       wordOneNumber : 3,
@@ -170,22 +181,18 @@
         ui.wordToShort = false;
 
         if (wordlen < options.minChar) {
-          lenScore = (lenScore - 100);
+          lenScore = (lenScore + score);
           ui.wordToShort = true;
-          $(".ui-password-message").text("Password to short");
-        } else {
-          $(".ui-password-message").text("");
+          $.ui.pwstrength.errors.push(options.errorMessages.password_to_short);
         }
         return lenScore;
       },
       wordSimilarToUsername : function( ui, word, score ) {
         var options = ui.options;
-        var username = jQuery(options.usernameField).val();
+        var username = $(options.usernameField).val();
         if (username && word.toLowerCase().match(username.toLowerCase())) {
-          return -100;
-          $(".ui-password-message").text("Password to similar to username");
-        } else {
-          $(".ui-password-message").text("");
+          $.ui.pwstrength.errors.push(options.errorMessages.same_as_username);
+          return score;
         }
         return true;
       },
@@ -218,6 +225,4 @@
       }
     }
   });
-
-
 }(jQuery));
