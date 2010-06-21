@@ -148,6 +148,7 @@
       $.ui.pwstrength.rules[rule] = active;
     },
     ruleScores : {
+      wordNotEmail: -100,
       wordLength : -100,
       wordSimilarToUsername : -100,
       wordLowercase : 1,
@@ -161,6 +162,7 @@
       wordLetterNumberCharCombo : 2
     },
     rules : {
+      wordNotEmail: true,
       wordLength : true,
       wordSimilarToUsername :true,
       wordLowercase : true,
@@ -174,6 +176,9 @@
       wordLetterNumberCharCombo : true
     },
     validationRules : {
+      wordNotEmail : function ( ui, word, score ) {
+        return word.match(/^([\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+\.)*[\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+@((((([a-z0-9]{1}[a-z0-9\-]{0,62}[a-z0-9]{1})|[a-z])\.)+[a-z]{2,6})|(\d{1,3}\.){3}\d{1,3}(\:\d{1,5})?)$/i) && score;
+      },
       wordLength : function( ui, word, score ) {
         var options = ui.options;
         var wordlen = word.length;
