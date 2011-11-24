@@ -8,7 +8,19 @@
       .ui-password-meter {
         width: 200px;
         height: 20px;
-        background: grey;
+        background-image: linear-gradient(bottom, rgb(212,212,212) 22%, rgb(149,155,158) 61%);
+        background-image: -o-linear-gradient(bottom, rgb(212,212,212) 22%, rgb(149,155,158) 61%);
+        background-image: -moz-linear-gradient(bottom, rgb(212,212,212) 22%, rgb(149,155,158) 61%);
+        background-image: -webkit-linear-gradient(bottom, rgb(212,212,212) 22%, rgb(149,155,158) 61%);
+        background-image: -ms-linear-gradient(bottom, rgb(212,212,212) 22%, rgb(149,155,158) 61%);
+
+        background-image: -webkit-gradient(
+          linear,
+          left bottom,
+          left top,
+          color-stop(0.22, rgb(212,212,212)),
+          color-stop(0.61, rgb(149,155,158))
+        );
       }
 
       .password-verdict {
@@ -16,19 +28,69 @@
         position: relative;
         bottom: 3px;
         left: 5px;
+        color: #fff;
+        text-shadow: 2px 2px 2px #000;
       }
 
       .password-twenty-five {
-        background: #f00;
+        background-image: linear-gradient(bottom, rgb(153,12,12) 22%, rgb(224,62,62) 61%);
+        background-image: -o-linear-gradient(bottom, rgb(153,12,12) 22%, rgb(224,62,62) 61%);
+        background-image: -moz-linear-gradient(bottom, rgb(153,12,12) 22%, rgb(224,62,62) 61%);
+        background-image: -webkit-linear-gradient(bottom, rgb(153,12,12) 22%, rgb(224,62,62) 61%);
+        background-image: -ms-linear-gradient(bottom, rgb(153,12,12) 22%, rgb(224,62,62) 61%);
+
+        background-image: -webkit-gradient(
+          linear,
+          left bottom,
+          left top,
+          color-stop(0.22, rgb(153,12,12)),
+          color-stop(0.61, rgb(224,62,62))
+        );
       }
       .password-fifty {
-        background: #f60;
+        background-image: linear-gradient(bottom, rgb(199,113,22) 22%, rgb(250,103,5) 61%);
+        background-image: -o-linear-gradient(bottom, rgb(199,113,22) 22%, rgb(250,103,5) 61%);
+        background-image: -moz-linear-gradient(bottom, rgb(199,113,22) 22%, rgb(250,103,5) 61%);
+        background-image: -webkit-linear-gradient(bottom, rgb(199,113,22) 22%, rgb(250,103,5) 61%);
+        background-image: -ms-linear-gradient(bottom, rgb(199,113,22) 22%, rgb(250,103,5) 61%);
+
+        background-image: -webkit-gradient(
+          linear,
+          left bottom,
+          left top,
+          color-stop(0.22, rgb(199,113,22)),
+          color-stop(0.61, rgb(250,103,5))
+        );
       }
       .password-seventy-five {
-        background: #3c0;
+        background-image: linear-gradient(bottom, rgb(26,138,199) 22%, rgb(5,172,250) 61%);
+        background-image: -o-linear-gradient(bottom, rgb(26,138,199) 22%, rgb(5,172,250) 61%);
+        background-image: -moz-linear-gradient(bottom, rgb(26,138,199) 22%, rgb(5,172,250) 61%);
+        background-image: -webkit-linear-gradient(bottom, rgb(26,138,199) 22%, rgb(5,172,250) 61%);
+        background-image: -ms-linear-gradient(bottom, rgb(26,138,199) 22%, rgb(5,172,250) 61%);
+
+        background-image: -webkit-gradient(
+          linear,
+          left bottom,
+          left top,
+          color-stop(0.22, rgb(26,138,199)),
+          color-stop(0.61, rgb(5,172,250))
+        );
       }
       .password-one-hundred {
-        background: #3f0;
+        background-image: linear-gradient(bottom, rgb(24,199,50) 22%, rgb(136,250,5) 61%);
+        background-image: -o-linear-gradient(bottom, rgb(24,199,50) 22%, rgb(136,250,5) 61%);
+        background-image: -moz-linear-gradient(bottom, rgb(24,199,50) 22%, rgb(136,250,5) 61%);
+        background-image: -webkit-linear-gradient(bottom, rgb(24,199,50) 22%, rgb(136,250,5) 61%);
+        background-image: -ms-linear-gradient(bottom, rgb(24,199,50) 22%, rgb(136,250,5) 61%);
+
+        background-image: -webkit-gradient(
+          linear,
+          left bottom,
+          left top,
+          color-stop(0.22, rgb(24,199,50)),
+          color-stop(0.61, rgb(136,250,5))
+        );
       }
     </style>
 	</head>
@@ -37,7 +99,7 @@
 			<fieldset>
 				<legend>Please type in your password</legend>
 				<input type="text" id="username" /><br />
-				<input type="password" id="password" />
+				<input type="password" id="password" data-short="The Password is too short" data-minchar="8" />
         <div id="messages"></div>
 			</fieldset>
 		</form>
