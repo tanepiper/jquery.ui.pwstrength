@@ -119,7 +119,7 @@
     },
 
     _progressWidget : function() {
-      return '<div class="ui-password-meter></div>';
+      return '<div class="ui-password-meter"></div>';
     }
   });
 

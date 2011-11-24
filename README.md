@@ -1,4 +1,3 @@
-================================
 jQueryUI Password Strength Meter
 ================================
 
@@ -8,7 +7,7 @@ rulesets for visualy displaying the quality of a users typed in password.
 The widget requires jQueryUI 1.8 core and progress meter.
 
 Options
-=======
+-------
 
 minChar:
   Default: 8 (Integer)
@@ -88,5 +87,5 @@ $(document).ready(function(){
       $('#messages').html($.ui.pwstrength.outputErrorList());
     }
   }
-	$(':password').pwstrength(options);
+  $(':password').pwstrength(options);
 });
