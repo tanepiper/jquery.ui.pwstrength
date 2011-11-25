@@ -16,7 +16,7 @@ Requirements
 Options
 -------
 
-    minChar:
+    minchar:
       Default: 8 (Integer)
       Sets the minimum required of characters for a password to not be considered too weak
 
@@ -32,15 +32,15 @@ Options
       Default: [17, 26, 40, 50] (Array)
       The scores used to determine what progressClass and verdicts to display
 
-    showVerdicts:
+    showverdicts:
       Default: true (Boolean)
       Determines if the verdicts are display on the progress bar or not
 
-    usernameField:
+    usernamefield:
       Default: "#username" (String)
       The username field to match a password to, to ensure the user does not use the same value for their password
 
-    raisePower:
+    raisepower:
       Default: 1.4 (Double)
       The value used to modify the final score, allows you to tailor your results
 

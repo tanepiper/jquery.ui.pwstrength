@@ -99,7 +99,7 @@
 			<fieldset>
 				<legend>Please type in your password</legend>
 				<input type="text" id="username" /><br />
-				<input type="password" id="password" data-short="The Password is too short" data-minchar="8" />
+				<input type="password" id="password" data-short="The Password is too short" data-minchar="4" />
         <div id="messages"></div>
 			</fieldset>
 		</form>
@@ -118,6 +118,7 @@
             $('#messages').text('Start typing password');
           },
           onKeyUp: function() {
+            console.log(this);
             $('#messages').html($.ui.pwstrength.outputErrorList());
           }
         }
