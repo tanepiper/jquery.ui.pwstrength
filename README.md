@@ -45,7 +45,7 @@ Options
 
 * __usernameField__:
 
-  Default: `"#username" (String)
+  Default: `"#username"` (String)
 
   The username field to match a password to, to ensure the user does not use
   the same value for their password
@@ -70,10 +70,14 @@ Options
 
 * __errorMessages__:
 
-  Default: `{
+  Default: (Object)
+
+  ```
+  {
         password_to_short : "The Password is too short",
         same_as_username : "Your password cannot be the same as your username"
-  }` (Object)
+  }
+  ```
 
   An object containing error messages.  These can be overwritten for language
   purposes, and can also be added to for your custom rules.
@@ -85,17 +89,17 @@ Adding Custom Rules
 The widget comes with the functionality to easily define your own custom rules.
 The format is as follows:
 
-    ```javascript
-    $.ui.pwstrength.addRule("ruleName", function (ui, word, score) {}, rule_score, rule_enabled);
-    ```
+```javascript
+$.ui.pwstrength.addRule("ruleName", function (ui, word, score) {}, rule_score, rule_enabled);
+```
 
 Example:
 
-    ```javascript
-    $.ui.pwstrength.addRule("testRule", function (ui, word, score) {
-        return word.match(/[a-z].[0-9]/) && score;
-    }, 10, true);
-    ```
+```javascript
+$.ui.pwstrength.addRule("testRule", function (ui, word, score) {
+    return word.match(/[a-z].[0-9]/) && score;
+}, 10, true);
+```
 
 
 Callback Functions
@@ -104,16 +108,16 @@ Callback Functions
 The widget provides two callback functions, onLoad and onKeyUp.  You can use
 them like this:
 
-    ```javascript
-    $(document).ready(function () {
-        var options = {
-            onLoad: function () {
-                $('#messages').text('Start typing password');
-            },
-            onKeyUp: function () {
-                $('#messages').html($.ui.pwstrength.outputErrorList());
-            }
-        };
-        $(':password').pwstrength(options);
-    });
-    ```
+```javascript
+$(document).ready(function () {
+    var options = {
+        onLoad: function () {
+            $('#messages').text('Start typing password');
+        },
+        onKeyUp: function () {
+            $('#messages').html($.ui.pwstrength.outputErrorList());
+        }
+    };
+    $(':password').pwstrength(options);
+});
+```
