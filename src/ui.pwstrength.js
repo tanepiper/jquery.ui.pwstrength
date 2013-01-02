@@ -2,15 +2,12 @@
 /*global jQuery */
 
 /*
-* jQuery UI Password Strength @VERSION
+* jQuery Password Strength plugin for Twitter Bootstrap
 *
-* Copyright (c) 2008 Tane Piper
-* Dual licensed under the MIT (MIT-LICENSE.txt)
-* and GPL (GPL-LICENSE.txt) licenses.
+* Copyright (c) 2008-2013 Tane Piper
+* Copyright (c) 2013 Alejandro Blanco
+* Dual licensed under the MIT and GPL licenses.
 *
-* Depends:
-*   jquery.ui.core.js
-*   jquery.ui.progressbar.js
 */
 
 (function ($) {
