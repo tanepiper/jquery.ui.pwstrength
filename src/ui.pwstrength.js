@@ -11,11 +11,9 @@
 */
 
 (function ($) {
-
     "use strict";
 
-    $.widget("ui.pwstrength", {
-        options: {
+    var options = {
             minChar : 8,
             errorMessages : {
                 password_to_short : "The Password is too short",
@@ -30,112 +28,119 @@
             onLoad: undefined,
             onKeyUp: undefined
         },
+        methods = {
+            init: function (settings) {
+                var self = this,
+                    allOptions = $.extend(options, settings);
 
-        _create: function () {
-            var self = this,
-                options = this.options,
-                id = ((new Date()).getTime() + Math.random());
+                return this.each(function (idx, el) {
+                    var $el = $(el),
+                        progressbar;
 
-            this.element
-                .addClass("ui-password")
-                .attr({
-                    role: "password"
-                })
-                .bind("keyup.pwstrength", function (event) {
-                    $.ui.pwstrength.errors = [];
-                    self._calculateScore(self.element.val());
-                    if ($.isFunction(options.onKeyUp)) { options.onKeyUp(); }
-                });
+                    $el.data("pwstrength", allOptions);
 
-            $.extend(this, {
-                identifier: id,
-                wordToShort: true
-            });
+                    $el.on("keyup", function (event) {
+                        var options = $el.data("pwstrength");
+                        options.errors = [];
+                        self._calculateScore($el.val());
+                        if ($.isFunction(options.onKeyUp)) {
+                            options.onKeyUp();
+                        }
+                    });
 
-            $(this._progressWidget()).insertAfter(this.element);
-            $(".ui-password-meter").progressbar({
-                value: 0
-            });
-            if (options.showVerdicts) {
-                $(".ui-password-meter").children().html('<span class="password-verdict">' + options.verdicts[0] + '</span>');
-            }
-            if ($.isFunction(options.onLoad)) { options.onLoad(); }
-        },
+                    progressbar = $(self._progressWidget());
+                    progressbar.insertAfter($el);
+                    progressbar.css("width", 0);
+                    $el.data("pwstrength").progressbar = progressbar;
 
-        destroy : function () {
-            this.element
-                .removeClass(".ui-password")
-                .removeAttr("role");
-            $.Widget.prototype.destroy.call(this);
-        },
-
-        _calculateScore : function (word) {
-            var self = this,
-                totalScore = 0;
-
-            $.each($.ui.pwstrength.rules, function (rule, active) {
-                if (active === true) {
-                    var score = $.ui.pwstrength.ruleScores[rule],
-                        result = $.ui.pwstrength.validationRules[rule](self, word, score);
-                    if (result) {
-                        totalScore += result;
+                    if (allOptions.showVerdicts) {
+                        $el.children().html('<span class="password-verdict">' + allOptions.verdicts[0] + '</span>');
                     }
-                }
-            });
-            this._setProgressBar(totalScore);
-            return totalScore;
-        },
+                    if ($.isFunction(allOptions.onLoad)) {
+                        allOptions.onLoad();
+                    }
+                });
+            },
 
-        _setProgressBar : function (score) {
-            var self = this,
-                options = this.options,
-                progress_width = 0;
+            destroy: function () {
+                // TODO
+                // - Remove verdicts
+                // - Remove progressbar
+            },
 
-            $(".ui-progressbar-value", ".ui-password-meter")[score >= options.scores[0] && score < options.scores[1] ? "addClass" : "removeClass"]("password-" + options.progressClass[1]);
-            $(".ui-progressbar-value", ".ui-password-meter")[score >= options.scores[1] && score < options.scores[2] ? "addClass" : "removeClass"]("password-" + options.progressClass[2]);
-            $(".ui-progressbar-value", ".ui-password-meter")[score >= options.scores[2] && score < options.scores[3] ? "addClass" : "removeClass"]("password-" + options.progressClass[3]);
-            $(".ui-progressbar-value", ".ui-password-meter")[score >= options.scores[3] ? "addClass" : "removeClass"]("password-" + options.progressClass[4]);
+            _calculateScore: function (word) {
+                var self = this,
+                    totalScore = 0;
 
-            if (score < options.scores[0]) {
-                progress_width = 0;
-                $(".ui-password-meter").progressbar("value", progress_width);
-                if (options.showVerdicts) {
-                    $(".ui-password-meter").children().html('<span class="password-verdict">' + options.verdicts[0] + '</span>');
-                }
-            } else if (score >= options.scores[0] && score < options.scores[1]) {
-                progress_width = 25;
-                $(".ui-password-meter").progressbar("value", progress_width);
-                if (options.showVerdicts) {
-                    $(".ui-password-meter").children().html('<span class="password-verdict">' + options.verdicts[1] + '</span>');
-                }
-            } else if (score >= options.scores[1] && score < options.scores[2]) {
-                progress_width = 50;
-                $(".ui-password-meter").progressbar("value", progress_width);
-                if (options.showVerdicts) {
-                    $(".ui-password-meter").children().html('<span class="password-verdict">' + options.verdicts[2] + '</span>');
-                }
-            } else if (score >= options.scores[2] && score < options.scores[3]) {
-                progress_width = 75;
-                $(".ui-password-meter").progressbar("value", progress_width);
-                if (options.showVerdicts) {
-                    $(".ui-password-meter").children().html('<span class="password-verdict">' + options.verdicts[3] + '</span>');
-                }
-            } else if (score >= options.scores[3]) {
-                progress_width = 100;
-                $(".ui-password-meter").progressbar("value", progress_width);
-                if (options.showVerdicts) {
-                    $(".ui-password-meter").children().html('<span class="password-verdict">' + options.verdicts[4] + '</span>');
-                }
+                $.each($.pwstrength.rules, function (rule, active) {
+                    if (active === true) {
+                        var score = $.pwstrength.ruleScores[rule],
+                            result = $.pwstrength.validationRules[rule](self, word, score);
+                        if (result) {
+                            totalScore += result;
+                        }
+                    }
+                });
+                this._setProgressBar(totalScore);
+                return totalScore;
+            },
+
+            _setProgressBar: function (score) {
+                this.each(function (idx, el) {
+                    var $el = $(el),
+                        options = $el.data("pwstrength"),
+                        progressbar = options.progressbar;
+
+                    $el[score >= options.scores[0] && score < options.scores[1] ? "addClass" : "removeClass"]("password-" + options.progressClass[1]);
+                    $el[score >= options.scores[1] && score < options.scores[2] ? "addClass" : "removeClass"]("password-" + options.progressClass[2]);
+                    $el[score >= options.scores[2] && score < options.scores[3] ? "addClass" : "removeClass"]("password-" + options.progressClass[3]);
+                    $el[score >= options.scores[3] ? "addClass" : "removeClass"]("password-" + options.progressClass[4]);
+
+                    if (score < options.scores[0]) {
+                        progressbar.css("width", 0);
+                        if (options.showVerdicts) {
+                            $el.children().html('<span class="password-verdict">' + options.verdicts[0] + '</span>');
+                        }
+                    } else if (score >= options.scores[0] && score < options.scores[1]) {
+                        progressbar.css("width", 25);
+                        if (options.showVerdicts) {
+                            $el.children().html('<span class="password-verdict">' + options.verdicts[1] + '</span>');
+                        }
+                    } else if (score >= options.scores[1] && score < options.scores[2]) {
+                        progressbar.css("width", 50);
+                        if (options.showVerdicts) {
+                            $el.children().html('<span class="password-verdict">' + options.verdicts[2] + '</span>');
+                        }
+                    } else if (score >= options.scores[2] && score < options.scores[3]) {
+                        progressbar.css("width", 75);
+                        if (options.showVerdicts) {
+                            $el.children().html('<span class="password-verdict">' + options.verdicts[3] + '</span>');
+                        }
+                    } else if (score >= options.scores[3]) {
+                        progressbar.css("width", 100);
+                        if (options.showVerdicts) {
+                            $el.children().html('<span class="password-verdict">' + options.verdicts[4] + '</span>');
+                        }
+                    }
+                });
+            },
+
+            _progressWidget : function () {
+                return '<div class="progress"><div class="bar"></div></div>';
             }
-            //$(".ui-password-meter").progressbar("value", progress_width);
-        },
+        };
 
-        _progressWidget : function () {
-            return '<div class="ui-password-meter></div>';
+    $.fn.pwstrength = function (method) {
+        var result;
+        if (methods[method]) {
+            result = methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
+        } else if (typeof method === "object" || !method) {
+            result = methods.init.apply(this, arguments);
+        } else {
+            $.error("Method " +  method + " does not exist on jQuery.pwstrength");
         }
-    });
-
-    //$.ui.password.getter = "calculateScore";
+        return result;
+    };
 
     $.extend($.ui.pwstrength, {
         errors: [],
