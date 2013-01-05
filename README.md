@@ -1,11 +1,10 @@
-================================
-jQueryUI Password Strength Meter
-================================
+====================================================
+jQuery Password Strength Meter for Twitter Bootstrap
+====================================================
 
-The jQuery UI Password Strength Meter is a widget for jQueryUI that provides
-rulesets for visualy displaying the quality of a users typed in password.
-
-The widget requires jQueryUI 1.8 core and progress meter.
+The jQuery Password Strength Meter is a plugin for Twitter Bootstrap that
+provides rulesets for visualy displaying the quality of a users typed in
+password.
 
 
 Options
@@ -86,17 +85,17 @@ Options
 Adding Custom Rules
 ===================
 
-The widget comes with the functionality to easily define your own custom rules.
+The plugin comes with the functionality to easily define your own custom rules.
 The format is as follows:
 
 ```javascript
-$.ui.pwstrength.addRule("ruleName", function (ui, word, score) {}, rule_score, rule_enabled);
+$("#passwdfield").pwstrength("addRule", "ruleName", function (options, word, score) {}, rule_score, rule_enabled);
 ```
 
 Example:
 
 ```javascript
-$.ui.pwstrength.addRule("testRule", function (ui, word, score) {
+$("#passwdfield").pwstrength("addRule", "testRule", function (options, word, score) {
     return word.match(/[a-z].[0-9]/) && score;
 }, 10, true);
 ```
@@ -105,7 +104,7 @@ $.ui.pwstrength.addRule("testRule", function (ui, word, score) {
 Callback Functions
 ==================
 
-The widget provides two callback functions, onLoad and onKeyUp.  You can use
+The plugin provides two callback functions, onLoad and onKeyUp.  You can use
 them like this:
 
 ```javascript
@@ -114,8 +113,8 @@ $(document).ready(function () {
         onLoad: function () {
             $('#messages').text('Start typing password');
         },
-        onKeyUp: function () {
-            $('#messages').html($.ui.pwstrength.outputErrorList());
+        onKeyUp: function (evt) {
+            $(evt.target).pwstrength("outputErrorList");
         }
     };
     $(':password').pwstrength(options);

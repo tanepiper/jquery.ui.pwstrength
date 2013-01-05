@@ -213,8 +213,10 @@
 
             outputErrorList: function () {
                 this.each(function (idx, el) {
-                    var output = '<ul class="error-list">';
-                    $.each($(el).data("pwstrength").errors, function (i, item) {
+                    var output = '<ul class="error-list">',
+                        $el = $(el);
+                    $el.parent().find("ul.error-list").remove();
+                    $.each($el.data("pwstrength").errors, function (i, item) {
                         output += '<li>' + item + '</li>';
                     });
                     output += '</ul>';
