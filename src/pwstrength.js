@@ -117,26 +117,31 @@
             $el[score >= options.scores[3] ? "addClass" : "removeClass"]("password-" + options.progressClass[4]);
 
             if (score < options.scores[0]) {
-                progressbar.find(".bar").css("width", "0%");
+                progressbar.addClass("progress-danger").removeClass("progress-warning").removeClass("progress-success");
+                progressbar.find(".bar").css("width", "5%");
                 if (options.showVerdicts) {
                     $el.children().html('<span class="password-verdict">' + options.verdicts[0] + '</span>');
                 }
             } else if (score >= options.scores[0] && score < options.scores[1]) {
+                progressbar.addClass("progress-danger").removeClass("progress-warning").removeClass("progress-success");
                 progressbar.find(".bar").css("width", "25%");
                 if (options.showVerdicts) {
                     $el.children().html('<span class="password-verdict">' + options.verdicts[1] + '</span>');
                 }
             } else if (score >= options.scores[1] && score < options.scores[2]) {
+                progressbar.addClass("progress-warning").removeClass("progress-danger").removeClass("progress-success");
                 progressbar.find(".bar").css("width", "50%");
                 if (options.showVerdicts) {
                     $el.children().html('<span class="password-verdict">' + options.verdicts[2] + '</span>');
                 }
             } else if (score >= options.scores[2] && score < options.scores[3]) {
+                progressbar.addClass("progress-warning").removeClass("progress-danger").removeClass("progress-success");
                 progressbar.find(".bar").css("width", "75%");
                 if (options.showVerdicts) {
                     $el.children().html('<span class="password-verdict">' + options.verdicts[3] + '</span>');
                 }
             } else if (score >= options.scores[3]) {
+                progressbar.addClass("progress-success").removeClass("progress-warning").removeClass("progress-danger");
                 progressbar.find(".bar").css("width", "100%");
                 if (options.showVerdicts) {
                     $el.children().html('<span class="password-verdict">' + options.verdicts[4] + '</span>');
