@@ -17,13 +17,6 @@ Options
   Sets the minimum required of characters for a password to not be considered
   too weak
 
-* __progressClass__:
-
-  Default: `['zero', 'twenty-five', 'fifty', 'seventy-five', 'one-hundred']` (Array)
-
-  The names of the classes that are added to the visual display bar, used to
-  provide CSS overide for display
-
 * __verdicts__:
 
   Default: `["Weak", "Normal", "Medium", "Strong", "Very Strong"]` (Array)
