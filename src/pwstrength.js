@@ -117,27 +117,27 @@
             $el[score >= options.scores[3] ? "addClass" : "removeClass"]("password-" + options.progressClass[4]);
 
             if (score < options.scores[0]) {
-                progressbar.css("width", 0);
+                progressbar.find(".bar").css("width", "0%");
                 if (options.showVerdicts) {
                     $el.children().html('<span class="password-verdict">' + options.verdicts[0] + '</span>');
                 }
             } else if (score >= options.scores[0] && score < options.scores[1]) {
-                progressbar.css("width", 25);
+                progressbar.find(".bar").css("width", "25%");
                 if (options.showVerdicts) {
                     $el.children().html('<span class="password-verdict">' + options.verdicts[1] + '</span>');
                 }
             } else if (score >= options.scores[1] && score < options.scores[2]) {
-                progressbar.css("width", 50);
+                progressbar.find(".bar").css("width", "50%");
                 if (options.showVerdicts) {
                     $el.children().html('<span class="password-verdict">' + options.verdicts[2] + '</span>');
                 }
             } else if (score >= options.scores[2] && score < options.scores[3]) {
-                progressbar.css("width", 75);
+                progressbar.find(".bar").css("width", "75%");
                 if (options.showVerdicts) {
                     $el.children().html('<span class="password-verdict">' + options.verdicts[3] + '</span>');
                 }
             } else if (score >= options.scores[3]) {
-                progressbar.css("width", 100);
+                progressbar.find(".bar").css("width", "100%");
                 if (options.showVerdicts) {
                     $el.children().html('<span class="password-verdict">' + options.verdicts[4] + '</span>');
                 }
@@ -183,13 +183,13 @@
                         options.errors = [];
                         calculateScore.call(self, $el);
                         if ($.isFunction(options.onKeyUp)) {
-                            options.onKeyUp();
+                            options.onKeyUp(event);
                         }
                     });
 
                     progressbar = $(progressWidget());
                     progressbar.insertAfter($el);
-                    progressbar.css("width", 0);
+                    progressbar.find(".bar").css("width", "0%");
                     $el.data("pwstrength").progressbar = progressbar;
 
                     if (allOptions.showVerdicts) {
