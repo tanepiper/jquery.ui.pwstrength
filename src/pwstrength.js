@@ -114,31 +114,31 @@
                 progressbar.addClass("progress-danger").removeClass("progress-warning").removeClass("progress-success");
                 progressbar.find(".bar").css("width", "5%");
                 if (options.showVerdicts) {
-                    $el.find(".password-verdict").text(options.verdicts[0]);
+                    $el.parent().find(".password-verdict").text(options.verdicts[0]);
                 }
             } else if (score >= options.scores[0] && score < options.scores[1]) {
                 progressbar.addClass("progress-danger").removeClass("progress-warning").removeClass("progress-success");
                 progressbar.find(".bar").css("width", "25%");
                 if (options.showVerdicts) {
-                    $el.find(".password-verdict").text(options.verdicts[1]);
+                    $el.parent().find(".password-verdict").text(options.verdicts[1]);
                 }
             } else if (score >= options.scores[1] && score < options.scores[2]) {
                 progressbar.addClass("progress-warning").removeClass("progress-danger").removeClass("progress-success");
                 progressbar.find(".bar").css("width", "50%");
                 if (options.showVerdicts) {
-                    $el.find(".password-verdict").text(options.verdicts[2]);
+                    $el.parent().find(".password-verdict").text(options.verdicts[2]);
                 }
             } else if (score >= options.scores[2] && score < options.scores[3]) {
                 progressbar.addClass("progress-warning").removeClass("progress-danger").removeClass("progress-success");
                 progressbar.find(".bar").css("width", "75%");
                 if (options.showVerdicts) {
-                    $el.find(".password-verdict").text(options.verdicts[3]);
+                    $el.parent().find(".password-verdict").text(options.verdicts[3]);
                 }
             } else if (score >= options.scores[3]) {
                 progressbar.addClass("progress-success").removeClass("progress-warning").removeClass("progress-danger");
                 progressbar.find(".bar").css("width", "100%");
                 if (options.showVerdicts) {
-                    $el.find(".password-verdict").text(options.verdicts[4]);
+                    $el.parent().find(".password-verdict").text(options.verdicts[4]);
                 }
             }
         },
@@ -205,7 +205,7 @@
             destroy: function () {
                 this.each(function (idx, el) {
                     var $el = $(el);
-                    $el.find("span.password-verdict").remove();
+                    $el.parent().find("span.password-verdict").remove();
                     $el.parent().find("div.progress").remove();
                     $el.parent().find("ul.error-list").remove();
                     $el.removeData("pwstrength");
@@ -216,7 +216,8 @@
                 this.each(function (idx, el) {
                     var output = '<ul class="error-list">',
                         $el = $(el),
-                        errors = $el.data("pwstrength").errors;
+                        errors = $el.data("pwstrength").errors,
+                        verdict;
                     $el.parent().find("ul.error-list").remove();
                     if (errors.length > 0) {
                         $.each(errors, function (i, item) {
@@ -224,6 +225,10 @@
                         });
                         output += '</ul>';
                         output = $(output);
+                        verdict = $el.parent().find("span.password-verdict");
+                        if (verdict.length > 0) {
+                            el = verdict;
+                        }
                         output.insertAfter(el);
                     }
                 });
