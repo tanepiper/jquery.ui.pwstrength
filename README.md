@@ -7,6 +7,13 @@ provides rulesets for visualy displaying the quality of a users typed in
 password.
 
 
+Requirements
+============
+
+* jQuery (tested with 1.8.3)
+* Bootstrap CSS for progress bars (tested with 2.2.2)
+
+
 Options
 =======
 
