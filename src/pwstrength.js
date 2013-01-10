@@ -15,6 +15,7 @@
 
     var options = {
             errors: [],
+            // Options
             minChar: 8,
             errorMessages: {
                 password_to_short: "The Password is too short",
@@ -27,6 +28,12 @@
             usernameField: "#username",
             onLoad: undefined,
             onKeyUp: undefined,
+            viewports: {
+                progress: undefined,
+                verdict: undefined,
+                errors: undefined
+            },
+            // Rules stuff
             ruleScores: {
                 wordNotEmail: -100,
                 wordLength: -100,
@@ -108,37 +115,50 @@
 
         setProgressBar = function ($el, score) {
             var options = $el.data("pwstrength"),
-                progressbar = options.progressbar;
+                progressbar = options.progressbar,
+                $verdict;
+
+            if (options.showVerdicts) {
+                if (options.viewports.verdict) {
+                    $verdict = $(options.viewports.verdict).find(".password-verdict");
+                } else {
+                    $verdict = $el.parent().find(".password-verdict");
+                    if ($verdict.length === 0) {
+                        $verdict = $('<span class="password-verdict"></span>');
+                        $verdict.insertAfter($el);
+                    }
+                }
+            }
 
             if (score < options.scores[0]) {
                 progressbar.addClass("progress-danger").removeClass("progress-warning").removeClass("progress-success");
                 progressbar.find(".bar").css("width", "5%");
                 if (options.showVerdicts) {
-                    $el.parent().find(".password-verdict").text(options.verdicts[0]);
+                    $verdict.text(options.verdicts[0]);
                 }
             } else if (score >= options.scores[0] && score < options.scores[1]) {
                 progressbar.addClass("progress-danger").removeClass("progress-warning").removeClass("progress-success");
                 progressbar.find(".bar").css("width", "25%");
                 if (options.showVerdicts) {
-                    $el.parent().find(".password-verdict").text(options.verdicts[1]);
+                    $verdict.text(options.verdicts[1]);
                 }
             } else if (score >= options.scores[1] && score < options.scores[2]) {
                 progressbar.addClass("progress-warning").removeClass("progress-danger").removeClass("progress-success");
                 progressbar.find(".bar").css("width", "50%");
                 if (options.showVerdicts) {
-                    $el.parent().find(".password-verdict").text(options.verdicts[2]);
+                    $verdict.text(options.verdicts[2]);
                 }
             } else if (score >= options.scores[2] && score < options.scores[3]) {
                 progressbar.addClass("progress-warning").removeClass("progress-danger").removeClass("progress-success");
                 progressbar.find(".bar").css("width", "75%");
                 if (options.showVerdicts) {
-                    $el.parent().find(".password-verdict").text(options.verdicts[3]);
+                    $verdict.text(options.verdicts[3]);
                 }
             } else if (score >= options.scores[3]) {
                 progressbar.addClass("progress-success").removeClass("progress-warning").removeClass("progress-danger");
                 progressbar.find(".bar").css("width", "100%");
                 if (options.showVerdicts) {
-                    $el.parent().find(".password-verdict").text(options.verdicts[4]);
+                    $verdict.text(options.verdicts[4]);
                 }
             }
         },
@@ -188,14 +208,23 @@
                     });
 
                     progressbar = $(progressWidget());
-                    progressbar.insertAfter($el);
+                    if (allOptions.viewports.progress) {
+                        $(allOptions.viewports.progress).append(progressbar);
+                    } else {
+                        progressbar.insertAfter($el);
+                    }
                     progressbar.find(".bar").css("width", "0%");
                     $el.data("pwstrength").progressbar = progressbar;
 
                     if (allOptions.showVerdicts) {
                         verdict = $('<span class="password-verdict">' + allOptions.verdicts[0] + '</span>');
-                        verdict.insertAfter($el);
+                        if (allOptions.viewports.verdict) {
+                            $(allOptions.viewports.verdict).append(verdict);
+                        } else {
+                            verdict.insertAfter($el);
+                        }
                     }
+
                     if ($.isFunction(allOptions.onLoad)) {
                         allOptions.onLoad();
                     }
@@ -212,24 +241,40 @@
                 });
             },
 
+            forceUpdate: function () {
+                var self = this;
+                this.each(function (idx, el) {
+                    var $el = $(el),
+                        options = $el.data("pwstrength");
+                    options.errors = [];
+                    calculateScore.call(self, $el);
+                });
+            },
+
             outputErrorList: function () {
                 this.each(function (idx, el) {
                     var output = '<ul class="error-list">',
                         $el = $(el),
                         errors = $el.data("pwstrength").errors,
+                        viewports = $el.data("pwstrength").viewports,
                         verdict;
                     $el.parent().find("ul.error-list").remove();
+
                     if (errors.length > 0) {
                         $.each(errors, function (i, item) {
                             output += '<li>' + item + '</li>';
                         });
                         output += '</ul>';
-                        output = $(output);
-                        verdict = $el.parent().find("span.password-verdict");
-                        if (verdict.length > 0) {
-                            el = verdict;
+                        if (viewports.errors) {
+                            $(viewports.errors).html(output);
+                        } else {
+                            output = $(output);
+                            verdict = $el.parent().find("span.password-verdict");
+                            if (verdict.length > 0) {
+                                el = verdict;
+                            }
+                            output.insertAfter(el);
                         }
-                        output.insertAfter(el);
                     }
                 });
             },
