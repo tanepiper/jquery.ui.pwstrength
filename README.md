@@ -42,6 +42,22 @@ Options
 
   Determines if the verdicts are display on the progress bar or not
 
+* __viewports__:
+
+  Default: (Object)
+
+  ```
+  {
+      progress: undefined,
+      verdict: undefined,
+      errors: undefined
+  }
+  ```
+
+  An object containing the viewports to use to show the elements of the
+  strength meter. Each one can be a CSS selector (`"#progressbar"`) or a DOM
+  node reference.
+
 * __usernameField__:
 
   Default: `"#username"` (String)
@@ -73,8 +89,8 @@ Options
 
   ```
   {
-        password_to_short : "The Password is too short",
-        same_as_username : "Your password cannot be the same as your username"
+      password_to_short : "The Password is too short",
+      same_as_username : "Your password cannot be the same as your username"
   }
   ```
 
