@@ -120,7 +120,7 @@
 
             if (options.showVerdicts) {
                 if (options.viewports.verdict) {
-                    $verdict = $(options.viewports.verdict).find(".password-verdict");
+                    $verdict = $el.parent().find(options.viewports.verdict).find(".password-verdict");
                 } else {
                     $verdict = $el.parent().find(".password-verdict");
                     if ($verdict.length === 0) {
@@ -196,7 +196,7 @@
                         progressbar,
                         verdict;
 
-                    $el.data("pwstrength", allOptions);
+                    $el.data("pwstrength", $.extend({}, allOptions));
 
                     $el.on("keyup", function (event) {
                         var options = $el.data("pwstrength");
@@ -219,7 +219,7 @@
                     if (allOptions.showVerdicts) {
                         verdict = $('<span class="password-verdict">' + allOptions.verdicts[0] + '</span>');
                         if (allOptions.viewports.verdict) {
-                            $(allOptions.viewports.verdict).append(verdict);
+                            $el.parent().find(allOptions.viewports.verdict).append(verdict);
                         } else {
                             verdict.insertAfter($el);
                         }
@@ -266,7 +266,7 @@
                         });
                         output += '</ul>';
                         if (viewports.errors) {
-                            $(viewports.errors).html(output);
+                            $el.parent().find(viewports.errors).html(output);
                         } else {
                             output = $(output);
                             verdict = $el.parent().find("span.password-verdict");
