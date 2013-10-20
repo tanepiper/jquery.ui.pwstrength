@@ -11,7 +11,7 @@ Requirements
 ============
 
 * jQuery (tested with 1.8.3)
-* Bootstrap CSS for progress bars (tested with 2.2.2)
+* Bootstrap CSS for progress bars (tested with 2.X and 3.0.0)
 
 
 Options
