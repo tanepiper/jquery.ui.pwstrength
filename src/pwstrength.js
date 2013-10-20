@@ -17,6 +17,7 @@
             errors: [],
             // Options
             minChar: 8,
+            bootstrap3: false,
             errorMessages: {
                 password_too_short: "<font color='red'>The Password is too short</font>",
                 same_as_username: "Your password cannot be the same as your username"
@@ -116,7 +117,14 @@
         setProgressBar = function ($el, score) {
             var options = $el.data("pwstrength"),
                 progressbar = options.progressbar,
+                $bar,
                 $verdict;
+
+            if (options.bootstrap3) {
+                $bar = progressbar.find(".progress-bar");
+            } else {
+                $bar = progressbar.find(".bar");
+            }
 
             if (options.showVerdicts) {
                 if (options.viewports.verdict) {
@@ -131,32 +139,32 @@
             }
 
             if (score < options.scores[0]) {
-                progressbar.find(".progress-bar").addClass("progress-bar-danger").removeClass("progress-bar-warning").removeClass("progress-bar-success");
-                progressbar.find(".progress-bar").css("width", "5%");
+                $bar.addClass("progress-bar-danger").removeClass("progress-bar-warning").removeClass("progress-bar-success");
+                $bar.css("width", "5%");
                 if (options.showVerdicts) {
                     $verdict.text(options.verdicts[0]);
                 }
             } else if (score >= options.scores[0] && score < options.scores[1]) {
-                progressbar.find(".progress-bar").addClass("progress-bar-danger").removeClass("progress-bar-warning").removeClass("progress-bar-success");
-                progressbar.find(".progress-bar").css("width", "25%");
+                $bar.addClass("progress-bar-danger").removeClass("progress-bar-warning").removeClass("progress-bar-success");
+                $bar.css("width", "25%");
                 if (options.showVerdicts) {
                     $verdict.text(options.verdicts[1]);
                 }
             } else if (score >= options.scores[1] && score < options.scores[2]) {
-                progressbar.find(".progress-bar").addClass("progress-bar-warning").removeClass("progress-bar-danger").removeClass("progress-bar-success");
-                progressbar.find(".progress-bar").css("width", "50%");
+                $bar.addClass("progress-bar-warning").removeClass("progress-bar-danger").removeClass("progress-bar-success");
+                $bar.css("width", "50%");
                 if (options.showVerdicts) {
                     $verdict.text(options.verdicts[2]);
                 }
             } else if (score >= options.scores[2] && score < options.scores[3]) {
-                progressbar.find(".progress-bar").addClass("progress-bar-warning").removeClass("progress-bar-danger").removeClass("progress-bar-success");
-                progressbar.find(".progress-bar").css("width", "75%");
+                $bar.addClass("progress-bar-warning").removeClass("progress-bar-danger").removeClass("progress-bar-success");
+                $bar.css("width", "75%");
                 if (options.showVerdicts) {
                     $verdict.text(options.verdicts[3]);
                 }
             } else if (score >= options.scores[3]) {
-                progressbar.find(".progress-bar").addClass("progress-bar-success").removeClass("progress-bar-warning").removeClass("progress-bar-danger");
-                progressbar.find(".progress-bar").css("width", "100%");
+                $bar.addClass("progress-bar-success").removeClass("progress-bar-warning").removeClass("progress-bar-danger");
+                $bar.css("width", "100%");
                 if (options.showVerdicts) {
                     $verdict.text(options.verdicts[4]);
                 }
@@ -164,8 +172,7 @@
         },
 
         calculateScore = function ($el) {
-            var self = this,
-                word = $el.val(),
+            var word = $el.val(),
                 totalScore = 0,
                 options = $el.data("pwstrength");
 
@@ -182,8 +189,12 @@
             return totalScore;
         },
 
-        progressWidget = function () {
-            return '<div class="progress"><div class="progress-bar"></div></div>';
+        progressWidget = function (options) {
+            var html = '<div class="progress"><div class="';
+            if (options.bootstrap3) {
+                html += 'progress-';
+            }
+            return html + 'bar"></div></div>';
         },
 
         methods = {
@@ -207,7 +218,7 @@
                         }
                     });
 
-                    progressbar = $(progressWidget());
+                    progressbar = $(progressWidget(allOptions));
                     if (allOptions.viewports.progress) {
                         $el.parent().find(allOptions.viewports.progress).append(progressbar);
                     } else {

@@ -24,6 +24,13 @@ Options
   Sets the minimum required of characters for a password to not be considered
   too weak
 
+* __bootstrap3__:
+
+  Default: `false` (Boolean)
+
+  Sets if it supports Bootstrap 3 (true) or Bootstrap 2 (false), the progress
+  bar html is different
+
 * __verdicts__:
 
   Default: `["Weak", "Normal", "Medium", "Strong", "Very Strong"]` (Array)
