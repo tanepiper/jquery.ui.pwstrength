@@ -115,14 +115,32 @@
             }
         },
 
+        possibleProgressBarClasses = ["danger", "warning", "success"],
+
+        updateProgressBarHTML = function ($bar, cssPrefix, cssClass, percentage) {
+            var aux, i;
+
+            $bar.addClass(cssPrefix + "bar-" + cssClass);
+            for (i = 0; i < possibleProgressBarClasses.length; i += 1) {
+                aux = possibleProgressBarClasses[i];
+                if (aux !== cssClass) {
+                    $bar.removeClass(cssPrefix + "bar-" + aux);
+                }
+            }
+            $bar.css("width", percentage);
+        },
+
         setProgressBar = function ($el, score) {
             var options = $el.data("pwstrength"),
                 progressbar = options.progressbar,
+                cssPrefix = "",
                 $bar,
-                $verdict;
+                $verdict,
+                verdictText;
 
             if (options.bootstrap3) {
                 $bar = progressbar.find(".progress-bar");
+                cssPrefix = "progress-";
             } else {
                 $bar = progressbar.find(".bar");
             }
@@ -140,35 +158,24 @@
             }
 
             if (score < options.scores[0]) {
-                $bar.addClass("progress-bar-danger").removeClass("progress-bar-warning").removeClass("progress-bar-success");
-                $bar.css("width", "5%");
-                if (options.showVerdicts) {
-                    $verdict.text(options.verdicts[0]);
-                }
+                updateProgressBarHTML($bar, cssPrefix, "danger", "5%");
+                verdictText = options.verdicts[0];
             } else if (score >= options.scores[0] && score < options.scores[1]) {
-                $bar.addClass("progress-bar-danger").removeClass("progress-bar-warning").removeClass("progress-bar-success");
-                $bar.css("width", "25%");
-                if (options.showVerdicts) {
-                    $verdict.text(options.verdicts[1]);
-                }
+                updateProgressBarHTML($bar, cssPrefix, "danger", "25%");
+                verdictText = options.verdicts[1];
             } else if (score >= options.scores[1] && score < options.scores[2]) {
-                $bar.addClass("progress-bar-warning").removeClass("progress-bar-danger").removeClass("progress-bar-success");
-                $bar.css("width", "50%");
-                if (options.showVerdicts) {
-                    $verdict.text(options.verdicts[2]);
-                }
+                updateProgressBarHTML($bar, cssPrefix, "warning", "50%");
+                verdictText = options.verdicts[2];
             } else if (score >= options.scores[2] && score < options.scores[3]) {
-                $bar.addClass("progress-bar-warning").removeClass("progress-bar-danger").removeClass("progress-bar-success");
-                $bar.css("width", "75%");
-                if (options.showVerdicts) {
-                    $verdict.text(options.verdicts[3]);
-                }
+                updateProgressBarHTML($bar, cssPrefix, "warning", "75%");
+                verdictText = options.verdicts[3];
             } else if (score >= options.scores[3]) {
-                $bar.addClass("progress-bar-success").removeClass("progress-bar-warning").removeClass("progress-bar-danger");
-                $bar.css("width", "100%");
-                if (options.showVerdicts) {
-                    $verdict.text(options.verdicts[4]);
-                }
+                updateProgressBarHTML($bar, cssPrefix, "success", "100%");
+                verdictText = options.verdicts[4];
+            }
+
+            if (options.showVerdicts) {
+                $verdict.text(verdictText);
             }
         },
 
