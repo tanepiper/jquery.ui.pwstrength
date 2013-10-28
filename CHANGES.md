@@ -2,6 +2,11 @@
 CHANGELOG
 =========
 
+0.4.4
+=====
+
+- Bad version in plugin manifest.
+
 0.4.3
 =====
 
