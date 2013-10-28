@@ -1,5 +1,5 @@
 {
-    "name": "pwstrength",
+    "name": "pwstrength-bootstrap",
     "title": "jQuery Password Strength Meter for Twitter Bootstrap",
     "description": "jQuery plugin for Twitter Bootstrap that provides rulesets for visualy displaying the quality of a users typed in password.",
     "keywords": [

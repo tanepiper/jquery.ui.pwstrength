@@ -2,6 +2,11 @@
 CHANGELOG
 =========
 
+0.4.3
+=====
+
+- Change jQuery plugin name to avoid conflict with an existing one.
+
 0.4.2
 =====
 
