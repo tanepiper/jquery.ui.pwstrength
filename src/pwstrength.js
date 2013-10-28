@@ -1,4 +1,4 @@
-/*jslint vars: false, browser: true, nomen: true, regexp: true */
+/*jslint browser: true, regexp: true, unparam: true */
 /*global jQuery */
 
 /*
@@ -131,23 +131,21 @@
         },
 
         setProgressBar = function ($el, score) {
-            var options = $el.data("pwstrength"),
-                progressbar = options.progressbar,
+            var localOptions = $el.data("pwstrength"),
+                progressbar = localOptions.progressbar,
                 cssPrefix = "",
-                $bar,
+                $bar = progressbar.find(".bar"),
                 $verdict,
                 verdictText;
 
-            if (options.bootstrap3) {
+            if (localOptions.bootstrap3) {
                 $bar = progressbar.find(".progress-bar");
                 cssPrefix = "progress-";
-            } else {
-                $bar = progressbar.find(".bar");
             }
 
-            if (options.showVerdicts) {
-                if (options.viewports.verdict) {
-                    $verdict = $el.parent().find(options.viewports.verdict).find(".password-verdict");
+            if (localOptions.showVerdicts) {
+                if (localOptions.viewports.verdict) {
+                    $verdict = $el.parent().find(localOptions.viewports.verdict).find(".password-verdict");
                 } else {
                     $verdict = $el.parent().find(".password-verdict");
                     if ($verdict.length === 0) {
@@ -157,24 +155,24 @@
                 }
             }
 
-            if (score < options.scores[0]) {
+            if (score < localOptions.scores[0]) {
                 updateProgressBarHTML($bar, cssPrefix, "danger", "5%");
-                verdictText = options.verdicts[0];
-            } else if (score >= options.scores[0] && score < options.scores[1]) {
+                verdictText = localOptions.verdicts[0];
+            } else if (score >= localOptions.scores[0] && score < localOptions.scores[1]) {
                 updateProgressBarHTML($bar, cssPrefix, "danger", "25%");
-                verdictText = options.verdicts[1];
-            } else if (score >= options.scores[1] && score < options.scores[2]) {
+                verdictText = localOptions.verdicts[1];
+            } else if (score >= localOptions.scores[1] && score < localOptions.scores[2]) {
                 updateProgressBarHTML($bar, cssPrefix, "warning", "50%");
-                verdictText = options.verdicts[2];
-            } else if (score >= options.scores[2] && score < options.scores[3]) {
+                verdictText = localOptions.verdicts[2];
+            } else if (score >= localOptions.scores[2] && score < localOptions.scores[3]) {
                 updateProgressBarHTML($bar, cssPrefix, "warning", "75%");
-                verdictText = options.verdicts[3];
-            } else if (score >= options.scores[3]) {
+                verdictText = localOptions.verdicts[3];
+            } else if (score >= localOptions.scores[3]) {
                 updateProgressBarHTML($bar, cssPrefix, "success", "100%");
-                verdictText = options.verdicts[4];
+                verdictText = localOptions.verdicts[4];
             }
 
-            if (options.showVerdicts) {
+            if (localOptions.showVerdicts) {
                 $verdict.text(verdictText);
             }
         },
@@ -182,12 +180,12 @@
         calculateScore = function ($el) {
             var word = $el.val(),
                 totalScore = 0,
-                options = $el.data("pwstrength");
+                localOptions = $el.data("pwstrength");
 
-            $.each(options.rules, function (rule, active) {
+            $.each(localOptions.rules, function (rule, active) {
                 if (active === true) {
-                    var score = options.ruleScores[rule],
-                        result = options.validationRules[rule](options, word, score);
+                    var score = localOptions.ruleScores[rule],
+                        result = localOptions.validationRules[rule](localOptions, word, score);
                     if (result) {
                         totalScore += result;
                     }
@@ -197,9 +195,9 @@
             return totalScore;
         },
 
-        progressWidget = function (options) {
+        progressWidget = function (localOptions) {
             var html = '<div class="progress"><div class="';
-            if (options.bootstrap3) {
+            if (localOptions.bootstrap3) {
                 html += 'progress-';
             }
             return html + 'bar"></div></div>';
@@ -218,11 +216,11 @@
                     $el.data("pwstrength", $.extend({}, allOptions));
 
                     $el.on("keyup", function (event) {
-                        var options = $el.data("pwstrength");
-                        options.errors = [];
+                        var localOptions = $el.data("pwstrength");
+                        localOptions.errors = [];
                         calculateScore.call(self, $el);
-                        if ($.isFunction(options.onKeyUp)) {
-                            options.onKeyUp(event);
+                        if ($.isFunction(localOptions.onKeyUp)) {
+                            localOptions.onKeyUp(event);
                         }
                     });
 
@@ -264,8 +262,8 @@
                 var self = this;
                 this.each(function (idx, el) {
                     var $el = $(el),
-                        options = $el.data("pwstrength");
-                    options.errors = [];
+                        localOptions = $el.data("pwstrength");
+                    localOptions.errors = [];
                     calculateScore.call(self, $el);
                 });
             },
@@ -300,10 +298,10 @@
 
             addRule: function (name, method, score, active) {
                 this.each(function (idx, el) {
-                    var options = $(el).data("pwstrength");
-                    options.rules[name] = active;
-                    options.ruleScores[name] = score;
-                    options.validationRules[name] = method;
+                    var localOptions = $(el).data("pwstrength");
+                    localOptions.rules[name] = active;
+                    localOptions.ruleScores[name] = score;
+                    localOptions.validationRules[name] = method;
                 });
             },
 
