@@ -130,6 +130,27 @@
             $bar.css("width", percentage);
         },
 
+        initVerdict = function (localOptions, $el, initial) {
+            var $verdict;
+
+            if (localOptions.viewports.verdict) {
+                $verdict = $el.parent().find(localOptions.viewports.verdict).find(".password-verdict");
+            } else {
+                $verdict = $el.parent().find(".password-verdict");
+            }
+
+            if ($verdict.length === 0) {
+                $verdict = $('<span class="password-verdict">' + initial + '</span>');
+                if (localOptions.viewports.verdict) {
+                    $el.parent().find(localOptions.viewports.verdict).append($verdict);
+                } else {
+                    $verdict.insertAfter($el);
+                }
+            }
+
+            return $verdict;
+        },
+
         setProgressBar = function ($el, score) {
             var localOptions = $el.data("pwstrength"),
                 progressbar = localOptions.progressbar,
@@ -144,15 +165,7 @@
             }
 
             if (localOptions.showVerdicts) {
-                if (localOptions.viewports.verdict) {
-                    $verdict = $el.parent().find(localOptions.viewports.verdict).find(".password-verdict");
-                } else {
-                    $verdict = $el.parent().find(".password-verdict");
-                    if ($verdict.length === 0) {
-                        $verdict = $('<span class="password-verdict"></span>');
-                        $verdict.insertAfter($el);
-                    }
-                }
+                $verdict = initVerdict(localOptions, $el, "");
             }
 
             if (score < localOptions.scores[0]) {
@@ -210,8 +223,7 @@
 
                 return this.each(function (idx, el) {
                     var $el = $(el),
-                        progressbar,
-                        verdict;
+                        progressbar;
 
                     $el.data("pwstrength", $.extend({}, allOptions));
 
@@ -234,12 +246,7 @@
                     $el.data("pwstrength").progressbar = progressbar;
 
                     if (allOptions.showVerdictsInitially) {
-                        verdict = $('<span class="password-verdict">' + allOptions.verdicts[0] + '</span>');
-                        if (allOptions.viewports.verdict) {
-                            $el.parent().find(allOptions.viewports.verdict).append(verdict);
-                        } else {
-                            verdict.insertAfter($el);
-                        }
+                        initVerdict(allOptions, $el, allOptions.verdicts[0]);
                     }
 
                     if ($.isFunction(allOptions.onLoad)) {
