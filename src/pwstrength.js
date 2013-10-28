@@ -25,6 +25,7 @@
             scores: [17, 26, 40, 50],
             verdicts: ["Weak", "Normal", "Medium", "Strong", "Very Strong"],
             showVerdicts: true,
+            showVerdictsInitially: false,
             raisePower: 1.4,
             usernameField: "#username",
             onLoad: undefined,
@@ -227,7 +228,7 @@
                     progressbar.find(".bar").css("width", "0%");
                     $el.data("pwstrength").progressbar = progressbar;
 
-                    if (allOptions.showVerdicts) {
+                    if (allOptions.showVerdictsInitially) {
                         verdict = $('<span class="password-verdict">' + allOptions.verdicts[0] + '</span>');
                         if (allOptions.viewports.verdict) {
                             $el.parent().find(allOptions.viewports.verdict).append(verdict);
