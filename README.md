@@ -47,7 +47,14 @@ Options
 
   Default: `true` (Boolean)
 
-  Determines if the verdicts are display on the progress bar or not
+  Determines if the verdicts are displayed on the progress bar or not
+
+* __showVerdictsInitially__:
+
+  Default: `false` (Boolean)
+
+  Determines if the verdicts are displayed before the user introduces a letter,
+  for this setting to take effect, `showVerdicts` must be `true`
 
 * __viewports__:
 
