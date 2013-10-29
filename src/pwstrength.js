@@ -19,8 +19,8 @@
             minChar: 8,
             bootstrap3: false,
             errorMessages: {
-                password_too_short: "<font color='red'>The Password is too short</font>",
-                same_as_username: "Your password cannot be the same as your username"
+                password_too_short: '<span style="color: #d52929">The Password is too short</font>',
+                same_as_username: "Your password cannot contain your username"
             },
             scores: [17, 26, 40, 50],
             verdicts: ["Weak", "Normal", "Medium", "Strong", "Very Strong"],
