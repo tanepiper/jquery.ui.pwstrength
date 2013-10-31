@@ -20,6 +20,7 @@
             bootstrap3: false,
             errorMessages: {
                 password_too_short: '<span style="color: #d52929">The Password is too short</span>',
+                email_as_password: '<span style="color: #d52929">Do not use your email as your password</span>',
                 same_as_username: "Your password cannot contain your username"
             },
             scores: [17, 26, 40, 50],
@@ -66,7 +67,10 @@
             },
             validationRules: {
                 wordNotEmail: function (options, word, score) {
-                    return word.match(/^([\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+\.)*[\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+@((((([a-z0-9]{1}[a-z0-9\-]{0,62}[a-z0-9]{1})|[a-z])\.)+[a-z]{2,6})|(\d{1,3}\.){3}\d{1,3}(\:\d{1,5})?)$/i) && score;
+                    if (word.match(/^([\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+\.)*[\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+@((((([a-z0-9]{1}[a-z0-9\-]{0,62}[a-z0-9]{1})|[a-z])\.)+[a-z]{2,6})|(\d{1,3}\.){3}\d{1,3}(\:\d{1,5})?)$/i)) {
+                        options.errors.push(options.errorMessages.email_as_password);
+                        return score;
+                    }                    
                 },
                 wordLength: function (options, word, score) {
                     var wordlen = word.length,
