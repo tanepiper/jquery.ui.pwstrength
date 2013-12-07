@@ -226,6 +226,14 @@
             return html + 'bar"></div></div>';
         },
 
+        getContainer = function (container, $el) {
+            var $container = $(container);
+            if (!($container && $container.length === 1)) {
+                $container = $el.parent();
+            }
+            return $container;
+        },
+
         methods = {
             init: function (settings) {
                 var self = this,
@@ -233,7 +241,7 @@
 
                 return this.each(function (idx, el) {
                     var $el = $(el),
-                        $container = $(allOptions.container),
+                        $container = getContainer(allOptions.container, $el),
                         progressbar;
 
                     $el.data("pwstrength", $.extend({}, allOptions));
@@ -248,9 +256,6 @@
                     });
 
                     progressbar = $(progressWidget(allOptions));
-                    if (!($container && $container.length === 1)) {
-                        $container = $el.parent();
-                    }
                     if (allOptions.viewports.progress) {
                         $container.find(allOptions.viewports.progress).append(progressbar);
                     } else {
@@ -273,11 +278,7 @@
                 this.each(function (idx, el) {
                     var $el = $(el),
                         localOptions = $el.data("pwstrength"),
-                        $container = $(localOptions.container);
-
-                    if (!($container && $container.length === 1)) {
-                        $container = $el.parent();
-                    }
+                        $container = getContainer(localOptions.container, $el);
 
                     $container.find("span.password-verdict").remove();
                     $container.find("div.progress").remove();
@@ -291,6 +292,7 @@
                 this.each(function (idx, el) {
                     var $el = $(el),
                         localOptions = $el.data("pwstrength");
+
                     localOptions.errors = [];
                     calculateScore.call(self, $el);
                 });
@@ -303,12 +305,8 @@
                         errors = $el.data("pwstrength").errors,
                         viewports = $el.data("pwstrength").viewports,
                         localOptions = $el.data("pwstrength"),
-                        $container = $(localOptions.container),
+                        $container = getContainer(localOptions.container, $el),
                         verdict;
-
-                    if (!($container && $container.length === 1)) {
-                        $container = $el.parent();
-                    }
 
                     $container.find("ul.error-list").remove();
                     if (errors.length > 0) {
@@ -333,6 +331,7 @@
             addRule: function (name, method, score, active) {
                 this.each(function (idx, el) {
                     var localOptions = $(el).data("pwstrength");
+
                     localOptions.rules[name] = active;
                     localOptions.ruleScores[name] = score;
                     localOptions.validationRules[name] = method;
