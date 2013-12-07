@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+0.4.5
+=====
+
+- Fix error message when the password contains the username.
+- Check if the password is an email, and mark as weak.
+- Add a _container_ option, it will be used to look for the viewports.
+
 0.4.4
 =====
 

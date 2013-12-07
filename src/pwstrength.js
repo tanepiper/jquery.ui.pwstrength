@@ -31,6 +31,7 @@
             usernameField: "#username",
             onLoad: undefined,
             onKeyUp: undefined,
+            container: undefined,
             viewports: {
                 progress: undefined,
                 verdict: undefined,
@@ -70,7 +71,7 @@
                     if (word.match(/^([\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+\.)*[\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+@((((([a-z0-9]{1}[a-z0-9\-]{0,62}[a-z0-9]{1})|[a-z])\.)+[a-z]{2,6})|(\d{1,3}\.){3}\d{1,3}(\:\d{1,5})?)$/i)) {
                         options.errors.push(options.errorMessages.email_as_password);
                         return score;
-                    }                    
+                    }
                 },
                 wordLength: function (options, word, score) {
                     var wordlen = word.length,
@@ -135,18 +136,23 @@
         },
 
         initVerdict = function (localOptions, $el, initial) {
-            var $verdict;
+            var $container = $(localOptions.container),
+                $verdict;
+
+            if (!($container && $container.length === 1)) {
+                $container = $el.parent();
+            }
 
             if (localOptions.viewports.verdict) {
-                $verdict = $el.parent().find(localOptions.viewports.verdict).find(".password-verdict");
+                $verdict = $container.find(localOptions.viewports.verdict).find(".password-verdict");
             } else {
-                $verdict = $el.parent().find(".password-verdict");
+                $verdict = $container.find(".password-verdict");
             }
 
             if ($verdict.length === 0) {
                 $verdict = $('<span class="password-verdict">' + initial + '</span>');
                 if (localOptions.viewports.verdict) {
-                    $el.parent().find(localOptions.viewports.verdict).append($verdict);
+                    $container.find(localOptions.viewports.verdict).append($verdict);
                 } else {
                     $verdict.insertAfter($el);
                 }
@@ -227,6 +233,7 @@
 
                 return this.each(function (idx, el) {
                     var $el = $(el),
+                        $container = $(allOptions.container),
                         progressbar;
 
                     $el.data("pwstrength", $.extend({}, allOptions));
@@ -241,8 +248,11 @@
                     });
 
                     progressbar = $(progressWidget(allOptions));
+                    if (!($container && $container.length === 1)) {
+                        $container = $el.parent();
+                    }
                     if (allOptions.viewports.progress) {
-                        $el.parent().find(allOptions.viewports.progress).append(progressbar);
+                        $container.find(allOptions.viewports.progress).append(progressbar);
                     } else {
                         progressbar.insertAfter($el);
                     }
@@ -261,10 +271,17 @@
 
             destroy: function () {
                 this.each(function (idx, el) {
-                    var $el = $(el);
-                    $el.parent().find("span.password-verdict").remove();
-                    $el.parent().find("div.progress").remove();
-                    $el.parent().find("ul.error-list").remove();
+                    var $el = $(el),
+                        localOptions = $el.data("pwstrength"),
+                        $container = $(localOptions.container);
+
+                    if (!($container && $container.length === 1)) {
+                        $container = $el.parent();
+                    }
+
+                    $container.find("span.password-verdict").remove();
+                    $container.find("div.progress").remove();
+                    $container.find("ul.error-list").remove();
                     $el.removeData("pwstrength");
                 });
             },
@@ -285,19 +302,25 @@
                         $el = $(el),
                         errors = $el.data("pwstrength").errors,
                         viewports = $el.data("pwstrength").viewports,
+                        localOptions = $el.data("pwstrength"),
+                        $container = $(localOptions.container),
                         verdict;
-                    $el.parent().find("ul.error-list").remove();
 
+                    if (!($container && $container.length === 1)) {
+                        $container = $el.parent();
+                    }
+
+                    $container.find("ul.error-list").remove();
                     if (errors.length > 0) {
                         $.each(errors, function (i, item) {
                             output += '<li>' + item + '</li>';
                         });
                         output += '</ul>';
                         if (viewports.errors) {
-                            $el.parent().find(viewports.errors).html(output);
+                            $container.find(viewports.errors).html(output);
                         } else {
                             output = $(output);
-                            verdict = $el.parent().find("span.password-verdict");
+                            verdict = $container.find("span.password-verdict");
                             if (verdict.length > 0) {
                                 el = verdict;
                             }

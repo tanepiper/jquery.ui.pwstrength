@@ -5,14 +5,24 @@
     <link rel="stylesheet" media="screen" href="bootstrap3.css" />
 </head>
 <body>
-    <form style="padding: 20px;">
-        <fieldset>
-            <legend>Please type in your password</legend>
-            User: <input type="text" id="username" /><br />
-            Pass: <input type="password" id="password" />
-            <div id="messages"></div>
-        </fieldset>
-    </form>
+    <div class="container">
+        <form role="form" style="margin-top: 20px;">
+            <div class="row" id="pwd-container">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="Password">
+                    </div>
+                </div>
+                <div class="col-sm-6 col-sm-offset-2 my-help-text">
+                    At least 12 characters <span class="pwstrength_viewport_progress"></span> <span class="pwstrength_viewport_verdict"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div id="messages" class="col-sm-12"></div>
+            </div>
+        </form>
+    </div>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script type="text/javascript" src="pwstrength.js"></script>
@@ -21,6 +31,11 @@
             "use strict";
             var options = {
                 bootstrap3: true,
+                container: "#pwd-container",
+                viewports: {
+                    progress: ".pwstrength_viewport_progress",
+                    verdict: ".pwstrength_viewport_verdict"
+                },
                 onLoad: function () {
                     $('#messages').text('Start typing password');
                 },

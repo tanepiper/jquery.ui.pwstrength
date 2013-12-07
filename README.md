@@ -58,6 +58,14 @@ Options
   Determines if the verdicts are displayed before the user introduces a letter,
   for this setting to take effect, `showVerdicts` must be `true`
 
+* __container__:
+
+  Default: `undefined` (CSS selector, or DOM node)
+
+  If defined, it will be used to locate the viewports, if undefined, the parent
+  of the input password will be used instead. The viewports must be children of
+  this node.
+
 * __viewports__:
 
   Default: (Object)
