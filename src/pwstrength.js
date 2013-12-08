@@ -21,7 +21,7 @@
             errorMessages: {
                 password_too_short: '<span style="color: #d52929">The Password is too short</span>',
                 email_as_password: '<span style="color: #d52929">Do not use your email as your password</span>',
-                same_as_username: "Your password cannot contain your username"
+                same_as_username: '<span style="color: #d52929">Your password cannot contain your username</span>'
             },
             scores: [17, 26, 40, 50],
             verdicts: ["Weak", "Normal", "Medium", "Strong", "Very Strong"],
@@ -120,19 +120,43 @@
             }
         },
 
-        possibleProgressBarClasses = ["danger", "warning", "success"],
+        getContainer = function (container, $el) {
+            var $container = $(container);
 
-        updateProgressBarHTML = function ($bar, cssPrefix, cssClass, percentage) {
-            var aux, i;
-
-            $bar.addClass(cssPrefix + "bar-" + cssClass);
-            for (i = 0; i < possibleProgressBarClasses.length; i += 1) {
-                aux = possibleProgressBarClasses[i];
-                if (aux !== cssClass) {
-                    $bar.removeClass(cssPrefix + "bar-" + aux);
-                }
+            if (!($container && $container.length === 1)) {
+                $container = $el.parent();
             }
-            $bar.css("width", percentage);
+
+            return $container;
+        },
+
+        progressWidget = function (localOptions) {
+            var html = '<div class="progress"><div class="';
+
+            if (localOptions.bootstrap3) {
+                html += 'progress-';
+            }
+
+            return html + 'bar"></div></div>';
+        },
+
+        initProgressBar = function (options, $el) {
+            var $progressbar = $(progressWidget(options)),
+                $container = getContainer(options.container, $el);
+
+            if (options.viewports.progress) {
+                $container.find(options.viewports.progress).append($progressbar);
+            } else {
+                $progressbar.insertAfter($el);
+            }
+
+            if (options.bootstrap3) {
+                $progressbar.find(".progress-bar").css("width", "0%");
+            } else {
+                $progressbar.find(".bar").css("width", "0%");
+            }
+
+            $el.data("pwstrength").progressbar = $progressbar;
         },
 
         initVerdict = function (localOptions, $el, initial) {
@@ -161,16 +185,31 @@
             return $verdict;
         },
 
+        possibleProgressBarClasses = ["danger", "warning", "success"],
+
+        updateProgressBarHTML = function ($bar, cssPrefix, cssClass, percentage) {
+            var aux, i;
+
+            $bar.addClass(cssPrefix + "bar-" + cssClass);
+            for (i = 0; i < possibleProgressBarClasses.length; i += 1) {
+                aux = possibleProgressBarClasses[i];
+                if (aux !== cssClass) {
+                    $bar.removeClass(cssPrefix + "bar-" + aux);
+                }
+            }
+            $bar.css("width", percentage);
+        },
+
         setProgressBar = function ($el, score) {
             var localOptions = $el.data("pwstrength"),
-                progressbar = localOptions.progressbar,
+                $progressbar = localOptions.progressbar,
                 cssPrefix = "",
-                $bar = progressbar.find(".bar"),
+                $bar = $progressbar.find(".bar"),
                 $verdict,
                 verdictText;
 
             if (localOptions.bootstrap3) {
-                $bar = progressbar.find(".progress-bar");
+                $bar = $progressbar.find(".progress-bar");
                 cssPrefix = "progress-";
             }
 
@@ -218,31 +257,13 @@
             return totalScore;
         },
 
-        progressWidget = function (localOptions) {
-            var html = '<div class="progress"><div class="';
-            if (localOptions.bootstrap3) {
-                html += 'progress-';
-            }
-            return html + 'bar"></div></div>';
-        },
-
-        getContainer = function (container, $el) {
-            var $container = $(container);
-            if (!($container && $container.length === 1)) {
-                $container = $el.parent();
-            }
-            return $container;
-        },
-
         methods = {
             init: function (settings) {
                 var self = this,
                     allOptions = $.extend(options, settings);
 
-                return this.each(function (idx, el) {
-                    var $el = $(el),
-                        $container = getContainer(allOptions.container, $el),
-                        progressbar;
+                this.each(function (idx, el) {
+                    var $el = $(el);
 
                     $el.data("pwstrength", $.extend({}, allOptions));
 
@@ -255,14 +276,7 @@
                         }
                     });
 
-                    progressbar = $(progressWidget(allOptions));
-                    if (allOptions.viewports.progress) {
-                        $container.find(allOptions.viewports.progress).append(progressbar);
-                    } else {
-                        progressbar.insertAfter($el);
-                    }
-                    progressbar.find(".bar").css("width", "0%");
-                    $el.data("pwstrength").progressbar = progressbar;
+                    initProgressBar(allOptions, $el);
 
                     if (allOptions.showVerdictsInitially) {
                         initVerdict(allOptions, $el, allOptions.verdicts[0]);
@@ -272,6 +286,8 @@
                         allOptions.onLoad();
                     }
                 });
+
+                return this;
             },
 
             destroy: function () {
@@ -289,6 +305,7 @@
 
             forceUpdate: function () {
                 var self = this;
+
                 this.each(function (idx, el) {
                     var $el = $(el),
                         localOptions = $el.data("pwstrength");
@@ -302,20 +319,18 @@
                 this.each(function (idx, el) {
                     var output = '<ul class="error-list">',
                         $el = $(el),
-                        errors = $el.data("pwstrength").errors,
-                        viewports = $el.data("pwstrength").viewports,
                         localOptions = $el.data("pwstrength"),
                         $container = getContainer(localOptions.container, $el),
                         verdict;
 
                     $container.find("ul.error-list").remove();
-                    if (errors.length > 0) {
-                        $.each(errors, function (i, item) {
+                    if (localOptions.errors.length > 0) {
+                        $.each(localOptions.errors, function (i, item) {
                             output += '<li>' + item + '</li>';
                         });
                         output += '</ul>';
-                        if (viewports.errors) {
-                            $container.find(viewports.errors).html(output);
+                        if (localOptions.viewports.errors) {
+                            $container.find(localOptions.viewports.errors).html(output);
                         } else {
                             output = $(output);
                             verdict = $container.find("span.password-verdict");
@@ -353,6 +368,7 @@
 
     $.fn.pwstrength = function (method) {
         var result;
+
         if (methods[method]) {
             result = methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
         } else if (typeof method === "object" || !method) {
@@ -360,6 +376,7 @@
         } else {
             $.error("Method " +  method + " does not exist on jQuery.pwstrength");
         }
+
         return result;
     };
 }(jQuery));
