@@ -23,6 +23,7 @@
                 email_as_password: '<span style="color: #d52929">Do not use your email as your password</span>',
                 same_as_username: '<span style="color: #d52929">Your password cannot contain your username</span>'
             },
+            strictSecurity: false,
             scores: [17, 26, 40, 50],
             verdicts: ["Weak", "Normal", "Medium", "Strong", "Very Strong"],
             showVerdicts: true,
