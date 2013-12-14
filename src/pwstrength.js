@@ -268,6 +268,10 @@
                 localOptions = $el.data("pwstrength");
 
             $.each(localOptions.rules, function (rule, active) {
+                if((rule == "wordRepetitions" || rule == "wordTwoCharacterClasses") 
+                   && !localOptions.strictSecurity) {
+                    active = false;
+                }
                 if (active === true) {
                     var score = localOptions.ruleScores[rule],
                         result = localOptions.validationRules[rule](localOptions, word, score);
