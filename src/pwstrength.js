@@ -21,8 +21,11 @@
             errorMessages: {
                 password_too_short: '<span style="color: #d52929">The Password is too short</span>',
                 email_as_password: '<span style="color: #d52929">Do not use your email as your password</span>',
-                same_as_username: '<span style="color: #d52929">Your password cannot contain your username</span>'
+                same_as_username: '<span style="color: #d52929">Your password cannot contain your username</span>',
+                two_character_classes: '<span style="color: #d52929">Use different character classes</span>',
+                repeated_character: '<span style="color: #d52929">Too many repetitions</span>'
             },
+            strictSecurity: false,
             scores: [17, 26, 40, 50],
             verdicts: ["Weak", "Normal", "Medium", "Strong", "Very Strong"],
             showVerdicts: true,
@@ -42,6 +45,8 @@
                 wordNotEmail: -100,
                 wordLength: -100,
                 wordSimilarToUsername: -100,
+                wordTwoCharacterClasses: 2,
+                wordRepetitions: -30,
                 wordLowercase: 1,
                 wordUppercase: 3,
                 wordOneNumber: 3,
@@ -56,6 +61,8 @@
                 wordNotEmail: true,
                 wordLength: true,
                 wordSimilarToUsername: true,
+                wordTwoCharacterClasses: true,
+                wordRepetitions: true,
                 wordLowercase: true,
                 wordUppercase: true,
                 wordOneNumber: true,
@@ -89,6 +96,22 @@
                         return score;
                     }
                     return true;
+                },
+                wordTwoCharacterClasses: function (options, word, score) {
+                    if (word.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/) ||
+                       (word.match(/([a-zA-Z])/) && word.match(/([0-9])/)) ||
+                       (word.match(/(.[!,@,#,$,%,\^,&,*,?,_,~])/) && word.match(/[a-zA-Z0-9_]/))) {
+                        return score;
+                    }
+                    else if (options.strictSecurity){
+                        options.errors.push(options.errorMessages.two_character_classes);
+                    }
+                },
+                wordRepetitions: function (options, word, score) {
+                    if (word.match(/(.)\1\1/) && options.strictSecurity) {
+                        options.errors.push(options.errorMessages.repeated_character);
+                        return score;
+                    }
                 },
                 wordLowercase: function (options, word, score) {
                     return word.match(/[a-z]/) && score;
@@ -245,6 +268,10 @@
                 localOptions = $el.data("pwstrength");
 
             $.each(localOptions.rules, function (rule, active) {
+                if((rule == "wordRepetitions" || rule == "wordTwoCharacterClasses") 
+                   && !localOptions.strictSecurity) {
+                    active = false;
+                }
                 if (active === true) {
                     var score = localOptions.ruleScores[rule],
                         result = localOptions.validationRules[rule](localOptions, word, score);
