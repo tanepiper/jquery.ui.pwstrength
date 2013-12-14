@@ -25,7 +25,6 @@
                 two_character_classes: '<span style="color: #d52929">Use different character classes</span>',
                 repeated_character: '<span style="color: #d52929">Too many repetitions</span>'
             },
-            strictSecurity: false,
             scores: [17, 26, 40, 50],
             verdicts: ["Weak", "Normal", "Medium", "Strong", "Very Strong"],
             showVerdicts: true,
@@ -61,8 +60,8 @@
                 wordNotEmail: true,
                 wordLength: true,
                 wordSimilarToUsername: true,
-                wordTwoCharacterClasses: true,
-                wordRepetitions: true,
+                wordTwoCharacterClasses: false,
+                wordRepetitions: false,
                 wordLowercase: true,
                 wordUppercase: true,
                 wordOneNumber: true,
@@ -95,7 +94,7 @@
                         options.errors.push(options.errorMessages.same_as_username);
                         return score;
                     }
-                    return true;
+                    return false;
                 },
                 wordTwoCharacterClasses: function (options, word, score) {
                     if (word.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/) ||
@@ -103,16 +102,15 @@
                             (word.match(/(.[!,@,#,$,%,\^,&,*,?,_,~])/) && word.match(/[a-zA-Z0-9_]/))) {
                         return score;
                     }
-
-                    if (options.strictSecurity) {
-                        options.errors.push(options.errorMessages.two_character_classes);
-                    }
+                    options.errors.push(options.errorMessages.two_character_classes);
+                    return false;
                 },
                 wordRepetitions: function (options, word, score) {
-                    if (word.match(/(.)\1\1/) && options.strictSecurity) {
+                    if (word.match(/(.)\1\1/)) {
                         options.errors.push(options.errorMessages.repeated_character);
                         return score;
                     }
+                    return false;
                 },
                 wordLowercase: function (options, word, score) {
                     return word.match(/[a-z]/) && score;
@@ -269,11 +267,7 @@
                 localOptions = $el.data("pwstrength");
 
             $.each(localOptions.rules, function (rule, active) {
-                if ((rule === "wordRepetitions" || rule === "wordTwoCharacterClasses")
-                        && !localOptions.strictSecurity) {
-                    active = false;
-                }
-                if (active === true) {
+                if (active) {
                     var score = localOptions.ruleScores[rule],
                         result = localOptions.validationRules[rule](localOptions, word, score);
                     if (result) {
@@ -288,12 +282,16 @@
         methods = {
             init: function (settings) {
                 var self = this,
-                    allOptions = $.extend(options, settings);
+                    allOptions;
+
+                // Make it deep extend (first param) so it extends too the
+                // rules and other inside objects
+                allOptions = $.extend(true, options, settings);
 
                 this.each(function (idx, el) {
                     var $el = $(el);
 
-                    $el.data("pwstrength", $.extend({}, allOptions));
+                    $el.data("pwstrength", allOptions);
 
                     $el.on("keyup", function (event) {
                         var localOptions = $el.data("pwstrength");
