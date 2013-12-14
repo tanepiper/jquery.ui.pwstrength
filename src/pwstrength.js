@@ -103,6 +103,12 @@
                         options.errors.push(options.errorMessages.two_character_classes);
                     }
                 },
+                wordRepetitions: function (options, word, score) {
+                    if (word.match(/(.)\1\1/) && options.strictSecurity) {
+                        options.errors.push(options.errorMessages.repeated_character);
+                        return score;
+                    }
+                },
                 wordLowercase: function (options, word, score) {
                     return word.match(/[a-z]/) && score;
                 },
