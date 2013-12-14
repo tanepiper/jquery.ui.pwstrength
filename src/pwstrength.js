@@ -99,11 +99,12 @@
                 },
                 wordTwoCharacterClasses: function (options, word, score) {
                     if (word.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/) ||
-                       (word.match(/([a-zA-Z])/) && word.match(/([0-9])/)) ||
-                       (word.match(/(.[!,@,#,$,%,\^,&,*,?,_,~])/) && word.match(/[a-zA-Z0-9_]/))) {
+                            (word.match(/([a-zA-Z])/) && word.match(/([0-9])/)) ||
+                            (word.match(/(.[!,@,#,$,%,\^,&,*,?,_,~])/) && word.match(/[a-zA-Z0-9_]/))) {
                         return score;
                     }
-                    else if (options.strictSecurity){
+
+                    if (options.strictSecurity) {
                         options.errors.push(options.errorMessages.two_character_classes);
                     }
                 },
@@ -268,8 +269,8 @@
                 localOptions = $el.data("pwstrength");
 
             $.each(localOptions.rules, function (rule, active) {
-                if((rule == "wordRepetitions" || rule == "wordTwoCharacterClasses") 
-                   && !localOptions.strictSecurity) {
+                if ((rule === "wordRepetitions" || rule === "wordTwoCharacterClasses")
+                        && !localOptions.strictSecurity) {
                     active = false;
                 }
                 if (active === true) {
