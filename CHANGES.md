@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+0.5.0
+=====
+
+- Support to activate/deactivate rules using the _rules_ object inside the
+  _options_ object.
+- Two new rules added, deactivated by default. Check for too many character
+  repetitions, and check for number of character classes used.
+
 0.4.5
 =====
 

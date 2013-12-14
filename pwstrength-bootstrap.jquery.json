@@ -8,10 +8,10 @@
         "strength",
         "meter"
     ],
-    "version": "0.4.5",
+    "version": "0.5.0",
     "author": {
         "name": "Alejandro Blanco other contributors",
-        "url": "https://github.com/ablanco/jquery.pwstrength.bootstrap/blob/0.4.5/AUTHORS.txt"
+        "url": "https://github.com/ablanco/jquery.pwstrength.bootstrap/blob/0.5.0/AUTHORS.txt"
     },
     "maintainers": [
         {
@@ -23,16 +23,16 @@
     "licenses": [
         {
             "type": "GPLv3",
-            "url": "https://github.com/ablanco/jquery.pwstrength.bootstrap/blob/0.4.5/GPL-LICENSE.txt"
+            "url": "https://github.com/ablanco/jquery.pwstrength.bootstrap/blob/0.5.0/GPL-LICENSE.txt"
         },
         {
             "type": "MIT",
-            "url": "https://github.com/ablanco/jquery.pwstrength.bootstrap/blob/0.4.5/MIT-LICENSE.txt"
+            "url": "https://github.com/ablanco/jquery.pwstrength.bootstrap/blob/0.5.0/MIT-LICENSE.txt"
         }
     ],
     "bugs": "https://github.com/ablanco/jquery.pwstrength.bootstrap/issues",
     "homepage": "https://github.com/ablanco/jquery.pwstrength.bootstrap",
-    "docs": "https://github.com/ablanco/jquery.pwstrength.bootstrap/blob/0.4.5/README.md",
+    "docs": "https://github.com/ablanco/jquery.pwstrength.bootstrap/blob/0.5.0/README.md",
     "download": "https://github.com/ablanco/jquery.pwstrength.bootstrap/releases",
     "dependencies": {
         "jquery": ">=1.7"

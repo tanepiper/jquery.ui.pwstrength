@@ -107,6 +107,33 @@ Options
 
   A callback function, fired on key up when the user is typing
 
+* __rules__:
+
+  Default: (Object)
+
+  ```
+  {
+      wordNotEmail: true,
+      wordLength: true,
+      wordSimilarToUsername: true,
+      wordTwoCharacterClasses: false,
+      wordRepetitions: false,
+      wordLowercase: true,
+      wordUppercase: true,
+      wordOneNumber: true,
+      wordThreeNumbers: true,
+      wordOneSpecialChar: true,
+      wordTwoSpecialChar: true,
+      wordUpperLowerCombo: true,
+      wordLetterNumberCombo: true,
+      wordLetterNumberCharCombo: true
+  }
+  ```
+
+  An object that sets wich validation rules are activated. Changing this object
+  it is possible to deactivate some validations, or to activate them for
+  extra security.
+
 * __errorMessages__:
 
   Default: (Object)
@@ -155,6 +182,27 @@ $(document).ready(function () {
         },
         onKeyUp: function (evt) {
             $(evt.target).pwstrength("outputErrorList");
+        }
+    };
+    $(':password').pwstrength(options);
+});
+```
+
+
+Extra security
+==============
+
+The plugin comes with two validation rules deactivated by default. One checks
+for too many character repetitions, and the other checks the number of
+character classes used. An easy way to increase the security of the passwords
+is to activate this two rules:
+
+```javascript
+$(document).ready(function () {
+    var options = {
+        rules: {
+            wordTwoCharacterClasses: true,
+            wordRepetitions: true
         }
     };
     $(':password').pwstrength(options);
