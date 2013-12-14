@@ -7,23 +7,95 @@
 * Copyright (c) 2008-2013 Tane Piper
 * Copyright (c) 2013 Alejandro Blanco
 * Dual licensed under the MIT and GPL licenses.
-*
 */
 
 (function ($) {
     "use strict";
 
-    var options = {
+    var span = function (text) {
+            return '<span style="color: #d52929">' + text + '</span>';
+        },
+
+        validationRules = {
+            wordNotEmail: function (options, word, score) {
+                if (word.match(/^([\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+\.)*[\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+@((((([a-z0-9]{1}[a-z0-9\-]{0,62}[a-z0-9]{1})|[a-z])\.)+[a-z]{2,6})|(\d{1,3}\.){3}\d{1,3}(\:\d{1,5})?)$/i)) {
+                    options.errors.push(options.errorMessages.email_as_password);
+                    return score;
+                }
+            },
+            wordLength: function (options, word, score) {
+                var wordlen = word.length,
+                    lenScore = Math.pow(wordlen, options.raisePower);
+                if (wordlen < options.minChar) {
+                    lenScore = (lenScore + score);
+                    options.errors.push(options.errorMessages.password_too_short);
+                }
+                return lenScore;
+            },
+            wordSimilarToUsername: function (options, word, score) {
+                var username = $(options.usernameField).val();
+                if (username && word.toLowerCase().match(username.toLowerCase())) {
+                    options.errors.push(options.errorMessages.same_as_username);
+                    return score;
+                }
+                return false;
+            },
+            wordTwoCharacterClasses: function (options, word, score) {
+                if (word.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/) ||
+                        (word.match(/([a-zA-Z])/) && word.match(/([0-9])/)) ||
+                        (word.match(/(.[!,@,#,$,%,\^,&,*,?,_,~])/) && word.match(/[a-zA-Z0-9_]/))) {
+                    return score;
+                }
+                options.errors.push(options.errorMessages.two_character_classes);
+                return false;
+            },
+            wordRepetitions: function (options, word, score) {
+                if (word.match(/(.)\1\1/)) {
+                    options.errors.push(options.errorMessages.repeated_character);
+                    return score;
+                }
+                return false;
+            },
+            wordLowercase: function (options, word, score) {
+                return word.match(/[a-z]/) && score;
+            },
+            wordUppercase: function (options, word, score) {
+                return word.match(/[A-Z]/) && score;
+            },
+            wordOneNumber : function (options, word, score) {
+                return word.match(/\d+/) && score;
+            },
+            wordThreeNumbers : function (options, word, score) {
+                return word.match(/(.*[0-9].*[0-9].*[0-9])/) && score;
+            },
+            wordOneSpecialChar : function (options, word, score) {
+                return word.match(/.[!,@,#,$,%,\^,&,*,?,_,~]/) && score;
+            },
+            wordTwoSpecialChar : function (options, word, score) {
+                return word.match(/(.*[!,@,#,$,%,\^,&,*,?,_,~].*[!,@,#,$,%,\^,&,*,?,_,~])/) && score;
+            },
+            wordUpperLowerCombo : function (options, word, score) {
+                return word.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/) && score;
+            },
+            wordLetterNumberCombo : function (options, word, score) {
+                return word.match(/([a-zA-Z])/) && word.match(/([0-9])/) && score;
+            },
+            wordLetterNumberCharCombo : function (options, word, score) {
+                return word.match(/([a-zA-Z0-9].*[!,@,#,$,%,\^,&,*,?,_,~])|([!,@,#,$,%,\^,&,*,?,_,~].*[a-zA-Z0-9])/) && score;
+            }
+        },
+
+        options = {
             errors: [],
             // Options
             minChar: 8,
             bootstrap3: false,
             errorMessages: {
-                password_too_short: '<span style="color: #d52929">The Password is too short</span>',
-                email_as_password: '<span style="color: #d52929">Do not use your email as your password</span>',
-                same_as_username: '<span style="color: #d52929">Your password cannot contain your username</span>',
-                two_character_classes: '<span style="color: #d52929">Use different character classes</span>',
-                repeated_character: '<span style="color: #d52929">Too many repetitions</span>'
+                password_too_short: span("The Password is too short"),
+                email_as_password: span("Do not use your email as your password"),
+                same_as_username: span("Your password cannot contain your username"),
+                two_character_classes: span("Use different character classes"),
+                repeated_character: span("Too many repetitions")
             },
             scores: [17, 26, 40, 50],
             verdicts: ["Weak", "Normal", "Medium", "Strong", "Very Strong"],
@@ -72,74 +144,7 @@
                 wordLetterNumberCombo: true,
                 wordLetterNumberCharCombo: true
             },
-            validationRules: {
-                wordNotEmail: function (options, word, score) {
-                    if (word.match(/^([\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+\.)*[\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+@((((([a-z0-9]{1}[a-z0-9\-]{0,62}[a-z0-9]{1})|[a-z])\.)+[a-z]{2,6})|(\d{1,3}\.){3}\d{1,3}(\:\d{1,5})?)$/i)) {
-                        options.errors.push(options.errorMessages.email_as_password);
-                        return score;
-                    }
-                },
-                wordLength: function (options, word, score) {
-                    var wordlen = word.length,
-                        lenScore = Math.pow(wordlen, options.raisePower);
-                    if (wordlen < options.minChar) {
-                        lenScore = (lenScore + score);
-                        options.errors.push(options.errorMessages.password_too_short);
-                    }
-                    return lenScore;
-                },
-                wordSimilarToUsername: function (options, word, score) {
-                    var username = $(options.usernameField).val();
-                    if (username && word.toLowerCase().match(username.toLowerCase())) {
-                        options.errors.push(options.errorMessages.same_as_username);
-                        return score;
-                    }
-                    return false;
-                },
-                wordTwoCharacterClasses: function (options, word, score) {
-                    if (word.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/) ||
-                            (word.match(/([a-zA-Z])/) && word.match(/([0-9])/)) ||
-                            (word.match(/(.[!,@,#,$,%,\^,&,*,?,_,~])/) && word.match(/[a-zA-Z0-9_]/))) {
-                        return score;
-                    }
-                    options.errors.push(options.errorMessages.two_character_classes);
-                    return false;
-                },
-                wordRepetitions: function (options, word, score) {
-                    if (word.match(/(.)\1\1/)) {
-                        options.errors.push(options.errorMessages.repeated_character);
-                        return score;
-                    }
-                    return false;
-                },
-                wordLowercase: function (options, word, score) {
-                    return word.match(/[a-z]/) && score;
-                },
-                wordUppercase: function (options, word, score) {
-                    return word.match(/[A-Z]/) && score;
-                },
-                wordOneNumber : function (options, word, score) {
-                    return word.match(/\d+/) && score;
-                },
-                wordThreeNumbers : function (options, word, score) {
-                    return word.match(/(.*[0-9].*[0-9].*[0-9])/) && score;
-                },
-                wordOneSpecialChar : function (options, word, score) {
-                    return word.match(/.[!,@,#,$,%,\^,&,*,?,_,~]/) && score;
-                },
-                wordTwoSpecialChar : function (options, word, score) {
-                    return word.match(/(.*[!,@,#,$,%,\^,&,*,?,_,~].*[!,@,#,$,%,\^,&,*,?,_,~])/) && score;
-                },
-                wordUpperLowerCombo : function (options, word, score) {
-                    return word.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/) && score;
-                },
-                wordLetterNumberCombo : function (options, word, score) {
-                    return word.match(/([a-zA-Z])/) && word.match(/([0-9])/) && score;
-                },
-                wordLetterNumberCharCombo : function (options, word, score) {
-                    return word.match(/([a-zA-Z0-9].*[!,@,#,$,%,\^,&,*,?,_,~])|([!,@,#,$,%,\^,&,*,?,_,~].*[a-zA-Z0-9])/) && score;
-                }
-            }
+            validationRules: validationRules
         },
 
         getContainer = function (container, $el) {
