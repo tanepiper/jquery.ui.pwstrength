@@ -21,7 +21,9 @@
             errorMessages: {
                 password_too_short: '<span style="color: #d52929">The Password is too short</span>',
                 email_as_password: '<span style="color: #d52929">Do not use your email as your password</span>',
-                same_as_username: '<span style="color: #d52929">Your password cannot contain your username</span>'
+                same_as_username: '<span style="color: #d52929">Your password cannot contain your username</span>',
+                two_character_classes: '<span style="color: #d52929">Use different character classes</span>',
+                repeated_character: '<span style="color: #d52929">Too many repetitions</span>'
             },
             strictSecurity: false,
             scores: [17, 26, 40, 50],
