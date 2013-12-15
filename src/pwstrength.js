@@ -380,6 +380,9 @@
                         $container = getContainer(localOptions.container, $el),
                         verdict;
 
+                    if (localOptions.bootstrap3 && localOptions.showPopover && $('div').hasClass('popover-content')) {
+                        destroyPopover($el);
+                    }
                     $container.find("ul.error-list").remove();
                     if (localOptions.errors.length > 0) {
                         $.each(localOptions.errors, function (i, item) {
@@ -401,6 +404,9 @@
                         $(".progress-bar").css("width", "0%");
                         $("ul.error-list").remove();
                         $("span.password-verdict").remove();
+                    }
+                    if (localOptions.bootstrap3 && localOptions.showPopover) {
+                        initPopover($el);
                     }
                 });
             },
