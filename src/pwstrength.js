@@ -90,6 +90,7 @@
             // Options
             minChar: 8,
             bootstrap3: false,
+            showPopover: false,
             errorMessages: {
                 password_too_short: span("The Password is too short"),
                 email_as_password: span("Do not use your email as your password"),
