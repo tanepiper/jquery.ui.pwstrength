@@ -397,6 +397,11 @@
                             output.insertAfter(el);
                         }
                     }
+                    if ($el.val().length == 0) {
+                        $(".progress-bar").css("width", "0%");
+                        $("ul.error-list").remove();
+                        $("span.password-verdict").remove();
+                    }
                 });
             },
 
