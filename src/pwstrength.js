@@ -148,6 +148,31 @@
             validationRules: validationRules
         },
 
+        initPopover = function ($el) {
+            $el.popover({
+                html: true,
+                content: function() {
+                    var output = '<h4>';
+                    output += ($('.password-verdict').text() + '</h3>');
+                    $.each(options.errors, function (key, value) {
+                        output += ('<p>' + value + '</p>');
+                    });
+                    return output;
+                },
+                placement: "top auto"
+            });
+            if ($el.val().length > 0) {
+                $el.popover('show');
+            }
+            else {
+                $('.progress-bar').css('width', '0%');
+            }
+            $('ul.error-list').hide();
+            $('.password-verdict').hide();
+        },
+        destroyPopover = function ($el) {
+            $el.popover('destroy');
+        },
         getContainer = function (container, $el) {
             var $container = $(container);
 
