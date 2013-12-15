@@ -152,8 +152,8 @@
             $el.popover({
                 html: true,
                 content: function() {
-                    var output = '<h4>';
-                    output += ($('.password-verdict').text() + '</h3>');
+                    var output = '<h5>';
+                    output += ($('.password-verdict').text() + '</h5>');
                     $.each(options.errors, function (key, value) {
                         output += ('<p>' + value + '</p>');
                     });
