@@ -40,7 +40,8 @@ Options
 
   Displays the errorMessages in a bootstrap3 popover window, instead of
   below the input field.
-  bootstrap3 option needs to be set `true` for this option to work.
+
+  `bootstrap3` option needs to be set `true` for this option to work.
   Furthermore bootstrap tooltip.js and popover.js need to be included.
 
 * __verdicts__:
