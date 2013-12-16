@@ -141,7 +141,7 @@ Options
 
   ```
   {
-      password_to_short : "The Password is too short",
+      password_too_short : "The Password is too short",
       same_as_username : "Your password cannot be the same as your username"
   }
   ```
