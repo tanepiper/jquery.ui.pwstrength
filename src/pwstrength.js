@@ -90,6 +90,7 @@
             // Options
             minChar: 8,
             bootstrap3: false,
+            showPopover: false,
             errorMessages: {
                 password_too_short: span("The Password is too short"),
                 email_as_password: span("Do not use your email as your password"),
@@ -147,6 +148,31 @@
             validationRules: validationRules
         },
 
+        initPopover = function ($el) {
+            $el.popover({
+                html: true,
+                content: function() {
+                    var output = '<h5>';
+                    output += ($('.password-verdict').text() + '</h5>');
+                    $.each(options.errors, function (key, value) {
+                        output += ('<p>' + value + '</p>');
+                    });
+                    return output;
+                },
+                placement: "top auto"
+            });
+            if ($el.val().length > 0) {
+                $el.popover('show');
+            }
+            else {
+                $('.progress-bar').css('width', '0%');
+            }
+            $('ul.error-list').hide();
+            $('.password-verdict').hide();
+        },
+        destroyPopover = function ($el) {
+            $el.popover('destroy');
+        },
         getContainer = function (container, $el) {
             var $container = $(container);
 
@@ -354,6 +380,9 @@
                         $container = getContainer(localOptions.container, $el),
                         verdict;
 
+                    if (localOptions.bootstrap3 && localOptions.showPopover && $('div').hasClass('popover-content')) {
+                        destroyPopover($el);
+                    }
                     $container.find("ul.error-list").remove();
                     if (localOptions.errors.length > 0) {
                         $.each(localOptions.errors, function (i, item) {
@@ -370,6 +399,14 @@
                             }
                             output.insertAfter(el);
                         }
+                    }
+                    if ($el.val().length == 0) {
+                        $(".progress-bar").css("width", "0%");
+                        $("ul.error-list").remove();
+                        $("span.password-verdict").remove();
+                    }
+                    if (localOptions.bootstrap3 && localOptions.showPopover) {
+                        initPopover($el);
                     }
                 });
             },

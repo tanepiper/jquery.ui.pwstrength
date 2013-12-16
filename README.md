@@ -34,6 +34,16 @@ Options
   Sets if it supports Bootstrap 3 (true) or Bootstrap 2 (false), the progress
   bar html is different
 
+* __showPopover__:
+
+  Default: `false` (Boolean)
+
+  Displays the errorMessages in a bootstrap3 popover window, instead of
+  below the input field.
+
+  `bootstrap3` option needs to be set `true` for this option to work.
+  Furthermore bootstrap tooltip.js and popover.js need to be included.
+
 * __verdicts__:
 
   Default: `["Weak", "Normal", "Medium", "Strong", "Very Strong"]` (Array)
