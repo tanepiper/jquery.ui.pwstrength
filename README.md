@@ -25,14 +25,14 @@ Options
   Default: `8` (Integer)
 
   Sets the minimum required of characters for a password to not be considered
-  too weak
+  too weak.
 
 * __bootstrap3__:
 
   Default: `false` (Boolean)
 
   Sets if it supports Bootstrap 3 (true) or Bootstrap 2 (false), the progress
-  bar html is different
+  bar html is different.
 
 * __showPopover__:
 
@@ -45,26 +45,19 @@ Options
 
   Default: `["Weak", "Normal", "Medium", "Strong", "Very Strong"]` (Array)
 
-  The display names for the verdicts related to the progressClass
+  The display names for the verdicts related to the progressClass.
 
 * __scores__:
 
   Default: `[17, 26, 40, 50]` (Array)
 
-  The scores used to determine what progressClass and verdicts to display
+  The scores used to determine what progressClass and verdicts to display.
 
 * __showVerdicts__:
 
   Default: `true` (Boolean)
 
-  Determines if the verdicts are displayed on the progress bar or not
-
-* __showVerdictsInitially__:
-
-  Default: `false` (Boolean)
-
-  Determines if the verdicts are displayed before the user introduces a letter,
-  for this setting to take effect, `showVerdicts` must be `true`
+  Determines if the verdicts are displayed on the progress bar or not.
 
 * __container__:
 
@@ -95,25 +88,25 @@ Options
   Default: `"#username"` (String)
 
   The username field to match a password to, to ensure the user does not use
-  the same value for their password
+  the same value for their password.
 
 * __raisePower__:
 
   Default: `1.4` (Double)
 
-  The value used to modify the final score, allows you to tailor your results
+  The value used to modify the final score, allows you to tailor your results.
 
 * __onLoad__:
 
   Default: `undefined` (Function)
 
-  A callback function, fired on load of the widget
+  A callback function, fired on load of the widget.
 
 * __onKeyUp__:
 
   Default: `undefined` (Function)
 
-  A callback function, fired on key up when the user is typing
+  A callback function, fired on key up when the user is typing.
 
 * __rules__:
 

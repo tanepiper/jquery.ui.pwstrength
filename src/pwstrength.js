@@ -101,7 +101,6 @@
             scores: [17, 26, 40, 50],
             verdicts: ["Weak", "Normal", "Medium", "Strong", "Very Strong"],
             showVerdicts: true,
-            showVerdictsInitially: false,
             raisePower: 1.4,
             usernameField: "#username",
             onLoad: undefined,
@@ -161,18 +160,12 @@
         initPopover = function (options, $el) {
             var $container = getContainer(options.container, $el),
                 placement = "top",
-                $progressbar,
                 $verdict;
 
             if (options.bootstrap3) {
                 placement = "auto " + placement;
             }
 
-            if (options.viewports.progress) {
-                $progressbar = $container.find(options.viewports.progress);
-            } else {
-                $progressbar = $container.find(".progress");
-            }
             if (options.viewports.verdict) {
                 $verdict = $container.find(options.viewports.verdict).find(".password-verdict");
             } else {
@@ -193,16 +186,7 @@
                 }
             });
 
-            if ($el.val().length > 0) {
-                $el.popover('show');
-            } else {
-                if (options.bootstrap3) {
-                    $progressbar.find('.progress-bar').css('width', '0%');
-                } else {
-                    $progressbar.find(".bar").css("width", "0%");
-                }
-            }
-
+            if ($el.val().length > 0) { $el.popover('show'); }
             $container.find('ul.error-list').hide();
             $verdict.hide();
         },
@@ -237,12 +221,8 @@
         },
 
         initVerdict = function (localOptions, $el, initial) {
-            var $container = $(localOptions.container),
+            var $container = getContainer(localOptions.container, $el),
                 $verdict;
-
-            if (!($container && $container.length === 1)) {
-                $container = $el.parent();
-            }
 
             if (localOptions.viewports.verdict) {
                 $verdict = $container.find(localOptions.viewports.verdict).find(".password-verdict");
@@ -257,6 +237,12 @@
                 } else {
                     $verdict.insertAfter($el);
                 }
+            }
+
+            if (localOptions.showPopover || $el.val().length === 0) {
+                $verdict.hide();
+            } else {
+                $verdict.show();
             }
 
             return $verdict;
@@ -289,12 +275,14 @@
                 $bar = $progressbar.find(".progress-bar");
                 cssPrefix = "progress-";
             }
-
             if (localOptions.showVerdicts) {
                 $verdict = initVerdict(localOptions, $el, "");
             }
 
-            if (score < localOptions.scores[0]) {
+            if ($el.val().length === 0) {
+                updateProgressBarHTML($bar, cssPrefix, "danger", "0%");
+                verdictText = "";
+            } else if (score < localOptions.scores[0]) {
                 updateProgressBarHTML($bar, cssPrefix, "danger", "5%");
                 verdictText = localOptions.verdicts[0];
             } else if (score >= localOptions.scores[0] && score < localOptions.scores[1]) {
@@ -311,9 +299,7 @@
                 verdictText = localOptions.verdicts[4];
             }
 
-            if (localOptions.showVerdicts) {
-                $verdict.text(verdictText);
-            }
+            if (localOptions.showVerdicts) { $verdict.text(verdictText); }
         },
 
         calculateScore = function ($el) {
@@ -358,10 +344,7 @@
                     });
 
                     initProgressBar(allOptions, $el);
-
-                    if (allOptions.showVerdictsInitially) {
-                        initVerdict(allOptions, $el, allOptions.verdicts[0]);
-                    }
+                    initVerdict(allOptions, $el, allOptions.verdicts[0]);
 
                     if ($.isFunction(allOptions.onLoad)) {
                         allOptions.onLoad();
@@ -402,10 +385,10 @@
                         $el = $(el),
                         localOptions = $el.data("pwstrength"),
                         $container = getContainer(localOptions.container, $el),
-                        verdict;
+                        $verdict;
 
                     $container.find("ul.error-list").remove();
-                    if (localOptions.errors.length > 0) {
+                    if ($el.val().length > 0 && localOptions.errors.length > 0) {
                         $.each(localOptions.errors, function (i, item) {
                             output += '<li>' + item + '</li>';
                         });
@@ -414,18 +397,14 @@
                             $container.find(localOptions.viewports.errors).html(output);
                         } else {
                             output = $(output);
-                            verdict = $container.find("span.password-verdict");
-                            if (verdict.length > 0) {
-                                el = verdict;
+                            $verdict = $container.find("span.password-verdict");
+                            if ($verdict.length > 0) {
+                                el = $verdict;
                             }
                             output.insertAfter(el);
                         }
                     }
-                    if ($el.val().length === 0) {
-                        $(".progress-bar").css("width", "0%");
-                        $("ul.error-list").remove();
-                        $("span.password-verdict").remove();
-                    }
+
                     if (localOptions.showPopover) {
                         initPopover(localOptions, $el);
                     }
