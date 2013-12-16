@@ -151,7 +151,7 @@
         initPopover = function ($el) {
             $el.popover({
                 html: true,
-                content: function() {
+                content: function () {
                     var output = '<h5>';
                     output += ($('.password-verdict').text() + '</h5>');
                     $.each(options.errors, function (key, value) {
@@ -163,8 +163,7 @@
             });
             if ($el.val().length > 0) {
                 $el.popover('show');
-            }
-            else {
+            } else {
                 $('.progress-bar').css('width', '0%');
             }
             $('ul.error-list').hide();
@@ -400,7 +399,7 @@
                             output.insertAfter(el);
                         }
                     }
-                    if ($el.val().length == 0) {
+                    if ($el.val().length === 0) {
                         $(".progress-bar").css("width", "0%");
                         $("ul.error-list").remove();
                         $("span.password-verdict").remove();
