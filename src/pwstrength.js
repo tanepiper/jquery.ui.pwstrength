@@ -148,30 +148,6 @@
             validationRules: validationRules
         },
 
-        initPopover = function ($el) {
-            $el.popover({
-                html: true,
-                content: function () {
-                    var output = '<h5>';
-                    output += ($('.password-verdict').text() + '</h5>');
-                    $.each(options.errors, function (key, value) {
-                        output += ('<p>' + value + '</p>');
-                    });
-                    return output;
-                },
-                placement: "top auto"
-            });
-            if ($el.val().length > 0) {
-                $el.popover('show');
-            } else {
-                $('.progress-bar').css('width', '0%');
-            }
-            $('ul.error-list').hide();
-            $('.password-verdict').hide();
-        },
-        destroyPopover = function ($el) {
-            $el.popover('destroy');
-        },
         getContainer = function (container, $el) {
             var $container = $(container);
 
@@ -180,6 +156,55 @@
             }
 
             return $container;
+        },
+
+        initPopover = function (options, $el) {
+            var $container = getContainer(options.container, $el),
+                placement = "top",
+                $progressbar,
+                $verdict;
+
+            if (options.bootstrap3) {
+                placement = "auto " + placement;
+            }
+
+            if (options.viewports.progress) {
+                $progressbar = $container.find(options.viewports.progress);
+            } else {
+                $progressbar = $container.find(".progress");
+            }
+            if (options.viewports.verdict) {
+                $verdict = $container.find(options.viewports.verdict).find(".password-verdict");
+            } else {
+                $verdict = $container.find(".password-verdict");
+            }
+
+            $el.popover('destroy');
+            $el.popover({
+                html: true,
+                placement: placement,
+                trigger: "manual",
+                content: function () {
+                    var output = '<h5>' + $verdict.text() + '</h5>';
+                    $.each(options.errors, function (key, value) {
+                        output += '<p>' + value + '</p>';
+                    });
+                    return output;
+                }
+            });
+
+            if ($el.val().length > 0) {
+                $el.popover('show');
+            } else {
+                if (options.bootstrap3) {
+                    $progressbar.find('.progress-bar').css('width', '0%');
+                } else {
+                    $progressbar.find(".bar").css("width", "0%");
+                }
+            }
+
+            $container.find('ul.error-list').hide();
+            $verdict.hide();
         },
 
         progressWidget = function (localOptions) {
@@ -379,9 +404,6 @@
                         $container = getContainer(localOptions.container, $el),
                         verdict;
 
-                    if (localOptions.bootstrap3 && localOptions.showPopover && $('div').hasClass('popover-content')) {
-                        destroyPopover($el);
-                    }
                     $container.find("ul.error-list").remove();
                     if (localOptions.errors.length > 0) {
                         $.each(localOptions.errors, function (i, item) {
@@ -404,8 +426,8 @@
                         $("ul.error-list").remove();
                         $("span.password-verdict").remove();
                     }
-                    if (localOptions.bootstrap3 && localOptions.showPopover) {
-                        initPopover($el);
+                    if (localOptions.showPopover) {
+                        initPopover(localOptions, $el);
                     }
                 });
             },
