@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+0.6.0
+=====
+
+- New feature: support showing the verdicts and errors in a Bootstrap popover.
+- Hide the verdicts and errors when the input is empty.
+- Remove _showVerdictsInitially_ option, is not needed anymore.
+
 0.5.0
 =====
 
