@@ -82,7 +82,20 @@
             },
             wordLetterNumberCharCombo : function (options, word, score) {
                 return word.match(/([a-zA-Z0-9].*[!,@,#,$,%,\^,&,*,?,_,~])|([!,@,#,$,%,\^,&,*,?,_,~].*[a-zA-Z0-9])/) && score;
-            }
+            },
+            wordSequences: function (options, word, score) {
+                var sequences = ["0123456789","9876543210","abcdefghijklmnopqrstuvxywz"];
+                if(word.length > 2) {
+                  for (var i in sequences) {                  
+                    for(var j = 0; j < (word.length - 3); j++){ //iterate the word trough a sliding window of size 3:
+                      if( sequences[i].indexOf( word.toLowerCase().substring(j,j+3) ) > -1 )
+                        options.errors.push(options.errorMessages.sequence_found);
+                        return score;
+                    }
+                  }
+                }
+                return false;
+            }            
         },
 
         options = {
@@ -96,7 +109,8 @@
                 email_as_password: span("Do not use your email as your password"),
                 same_as_username: span("Your password cannot contain your username"),
                 two_character_classes: span("Use different character classes"),
-                repeated_character: span("Too many repetitions")
+                repeated_character: span("Too many repetitions"),
+                sequence_found: span("Your password contains sequences")
             },
             scores: [17, 26, 40, 50],
             verdicts: ["Weak", "Normal", "Medium", "Strong", "Very Strong"],
@@ -126,7 +140,8 @@
                 wordTwoSpecialChar: 5,
                 wordUpperLowerCombo: 2,
                 wordLetterNumberCombo: 2,
-                wordLetterNumberCharCombo: 2
+                wordLetterNumberCharCombo: 2,
+                wordSequences: -100
             },
             rules: {
                 wordNotEmail: true,
@@ -142,7 +157,8 @@
                 wordTwoSpecialChar: true,
                 wordUpperLowerCombo: true,
                 wordLetterNumberCombo: true,
-                wordLetterNumberCharCombo: true
+                wordLetterNumberCharCombo: true,
+                wordSequences: true
             },
             validationRules: validationRules
         },
