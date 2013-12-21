@@ -1,6 +1,4 @@
-====================================================
-jQuery Password Strength Meter for Twitter Bootstrap
-====================================================
+# jQuery Password Strength Meter for Twitter Bootstrap
 
 [![Code Climate](https://codeclimate.com/github/ablanco/jquery.pwstrength.bootstrap.png)](https://codeclimate.com/github/ablanco/jquery.pwstrength.bootstrap)
 
@@ -10,15 +8,14 @@ password.
 
 Dual licensed under the MIT and GPL licenses.
 
-Requirements
-============
+
+## Requirements
 
 * jQuery (tested with 1.8.3)
 * Bootstrap CSS for progress bars (tested with 2.X and 3.0.0)
 
 
-Options
-=======
+## Options
 
 * __minChar__:
 
@@ -150,8 +147,7 @@ Options
   purposes, and can also be added to for your custom rules.
 
 
-Adding Custom Rules
-===================
+## Adding Custom Rules
 
 The plugin comes with the functionality to easily define your own custom rules.
 The format is as follows:
@@ -169,8 +165,7 @@ $("#passwdfield").pwstrength("addRule", "testRule", function (options, word, sco
 ```
 
 
-Callback Functions
-==================
+## Callback Functions
 
 The plugin provides two callback functions, onLoad and onKeyUp.  You can use
 them like this:
@@ -190,8 +185,7 @@ $(document).ready(function () {
 ```
 
 
-Extra security
-==============
+## Extra security
 
 The plugin comes with two validation rules deactivated by default. One checks
 for too many character repetitions, and the other checks the number of
