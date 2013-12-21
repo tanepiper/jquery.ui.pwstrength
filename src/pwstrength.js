@@ -16,6 +16,8 @@
             return '<span style="color: #d52929">' + text + '</span>';
         },
 
+        forbiddenSequences = ["0123456789", "9876543210", "abcdefghijklmnopqrstuvxywz", "qwertyuiopasdfghjklzxcvbnm"],
+
         validationRules = {
             wordNotEmail: function (options, word, score) {
                 if (word.match(/^([\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+\.)*[\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+@((((([a-z0-9]{1}[a-z0-9\-]{0,62}[a-z0-9]{1})|[a-z])\.)+[a-z]{2,6})|(\d{1,3}\.){3}\d{1,3}(\:\d{1,5})?)$/i)) {
@@ -84,18 +86,21 @@
                 return word.match(/([a-zA-Z0-9].*[!,@,#,$,%,\^,&,*,?,_,~])|([!,@,#,$,%,\^,&,*,?,_,~].*[a-zA-Z0-9])/) && score;
             },
             wordSequences: function (options, word, score) {
-                var sequences = ["0123456789","9876543210","abcdefghijklmnopqrstuvxywz"];
-                if(word.length > 2) {
-                  for (var i in sequences) {                  
-                    for(var j = 0; j < (word.length - 3); j++){ //iterate the word trough a sliding window of size 3:
-                      if( sequences[i].indexOf( word.toLowerCase().substring(j,j+3) ) > -1 )
-                        options.errors.push(options.errorMessages.sequence_found);
-                        return score;
+                var i, j;
+                if (word.length > 2) {
+                    for (i in forbiddenSequences) {
+                        if (forbiddenSequences.hasOwnProperty(i)) {
+                            for (j = 0; j < (word.length - 3); j += 1) { //iterate the word trough a sliding window of size 3:
+                                if (forbiddenSequences[i].indexOf(word.toLowerCase().substring(j, j + 3)) > -1) {
+                                    options.errors.push(options.errorMessages.sequence_found);
+                                    return score;
+                                }
+                            }
+                        }
                     }
-                  }
                 }
                 return false;
-            }            
+            }
         },
 
         options = {
