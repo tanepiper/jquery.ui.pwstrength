@@ -129,9 +129,14 @@
         $.each(options.rules.activated, function (rule, active) {
             if (active) {
                 var score = options.rules.scores[rule],
-                    result = rulesEngine.validation[rule](options, word, score);
-                if (result) {
-                    totalScore += result;
+                    funct = rulesEngine.validation[rule],
+                    result;
+
+                if (funct) {
+                    result = funct(options, word, score);
+                    if (result) {
+                        totalScore += result;
+                    }
                 }
             }
         });
@@ -143,11 +148,11 @@
     // =======
 
     options.rules = {};
-
     options.rules.scores = {
         wordNotEmail: -100,
         wordLength: -100,
         wordSimilarToUsername: -100,
+        wordSequences: -100,
         wordTwoCharacterClasses: 2,
         wordRepetitions: -30,
         wordLowercase: 1,
@@ -158,14 +163,13 @@
         wordTwoSpecialChar: 5,
         wordUpperLowerCombo: 2,
         wordLetterNumberCombo: 2,
-        wordLetterNumberCharCombo: 2,
-        wordSequences: -100
+        wordLetterNumberCharCombo: 2
     };
-
     options.rules.activated = {
         wordNotEmail: true,
         wordLength: true,
         wordSimilarToUsername: true,
+        wordSequences: true,
         wordTwoCharacterClasses: false,
         wordRepetitions: false,
         wordLowercase: true,
@@ -176,8 +180,38 @@
         wordTwoSpecialChar: true,
         wordUpperLowerCombo: true,
         wordLetterNumberCombo: true,
-        wordLetterNumberCharCombo: true,
-        wordSequences: true
+        wordLetterNumberCharCombo: true
+    };
+    options.rules.scores = [17, 26, 40, 50];
+    options.rules.raisePower = 1.4;
+
+    options.common = {};
+    options.common.minChar = 8;
+    options.common.onLoad = undefined;
+    options.common.onKeyUp = undefined;
+
+    options.ui = {};
+    options.ui.bootstrap2 = false;
+    options.ui.showPopover = false;
+    options.ui.spanError = function (text) {
+        return '<span style="color: #d52929">' + text + '</span>';
+    };
+    options.ui.errorMessages = {
+        password_too_short: options.ui.spanError("The Password is too short"),
+        email_as_password: options.ui.spanError("Do not use your email as your password"),
+        same_as_username: options.ui.spanError("Your password cannot contain your username"),
+        two_character_classes: options.ui.spanError("Use different character classes"),
+        repeated_character: options.ui.spanError("Too many repetitions"),
+        sequence_found: options.ui.spanError("Your password contains sequences")
+    };
+    options.ui.verdicts = ["Weak", "Normal", "Medium", "Strong", "Very Strong"];
+    options.ui.showVerdicts = true;
+    options.ui.usernameField = "#username";
+    options.ui.container = undefined;
+    options.ui.viewports = {
+        progress: undefined,
+        verdict: undefined,
+        errors: undefined
     };
 
 
@@ -204,40 +238,11 @@
 
 
 
-    var span = function (text) {
-            return '<span style="color: #d52929">' + text + '</span>';
-        },
 
-        optionsOld = {
-            errors: [],
-            // Options
-            minChar: 8,
-            bootstrap3: false,
-            showPopover: false,
-            errorMessages: {
-                password_too_short: span("The Password is too short"),
-                email_as_password: span("Do not use your email as your password"),
-                same_as_username: span("Your password cannot contain your username"),
-                two_character_classes: span("Use different character classes"),
-                repeated_character: span("Too many repetitions"),
-                sequence_found: span("Your password contains sequences")
-            },
-            scores: [17, 26, 40, 50],
-            verdicts: ["Weak", "Normal", "Medium", "Strong", "Very Strong"],
-            showVerdicts: true,
-            raisePower: 1.4,
-            usernameField: "#username",
-            onLoad: undefined,
-            onKeyUp: undefined,
-            container: undefined,
-            viewports: {
-                progress: undefined,
-                verdict: undefined,
-                errors: undefined
-            }
-        },
 
-        getContainer = function (container, $el) {
+
+
+    var getContainer = function (container, $el) {
             var $container = $(container);
 
             if (!($container && $container.length === 1)) {
