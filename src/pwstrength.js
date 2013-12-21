@@ -12,98 +12,203 @@
 (function ($) {
     "use strict";
 
+    var rulesEngine = {},
+        validation = {},
+        options = {},
+        ui = {},
+        methods = {};
+
+    // RULES ENGINE
+    // ============
+
+    rulesEngine.forbiddenSequences = [
+        "0123456789", "9876543210", "abcdefghijklmnopqrstuvxywz",
+        "qwertyuiopasdfghjklzxcvbnm"
+    ];
+
+    validation.wordNotEmail = function (options, word, score) {
+        if (word.match(/^([\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+\.)*[\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+@((((([a-z0-9]{1}[a-z0-9\-]{0,62}[a-z0-9]{1})|[a-z])\.)+[a-z]{2,6})|(\d{1,3}\.){3}\d{1,3}(\:\d{1,5})?)$/i)) {
+            options.errors.push(options.errorMessages.email_as_password);
+            return score;
+        }
+    };
+
+    validation.wordLength = function (options, word, score) {
+        var wordlen = word.length,
+            lenScore = Math.pow(wordlen, options.raisePower);
+        if (wordlen < options.minChar) {
+            lenScore = (lenScore + score);
+            options.errors.push(options.errorMessages.password_too_short);
+        }
+        return lenScore;
+    };
+
+    validation.wordSimilarToUsername = function (options, word, score) {
+        var username = $(options.usernameField).val();
+        if (username && word.toLowerCase().match(username.toLowerCase())) {
+            options.errors.push(options.errorMessages.same_as_username);
+            return score;
+        }
+        return false;
+    };
+
+    validation.wordTwoCharacterClasses = function (options, word, score) {
+        if (word.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/) ||
+                (word.match(/([a-zA-Z])/) && word.match(/([0-9])/)) ||
+                (word.match(/(.[!,@,#,$,%,\^,&,*,?,_,~])/) && word.match(/[a-zA-Z0-9_]/))) {
+            return score;
+        }
+        options.errors.push(options.errorMessages.two_character_classes);
+        return false;
+    };
+
+    validation.wordRepetitions = function (options, word, score) {
+        if (word.match(/(.)\1\1/)) {
+            options.errors.push(options.errorMessages.repeated_character);
+            return score;
+        }
+        return false;
+    };
+
+    validation.wordSequences = function (options, word, score) {
+        var j;
+        if (word.length > 2) {
+            $.each(rulesEngine.forbiddenSequences, function (idx, sequence) {
+                for (j = 0; j < (word.length - 3); j += 1) { //iterate the word trough a sliding window of size 3:
+                    if (sequence.indexOf(word.toLowerCase().substring(j, j + 3)) > -1) {
+                        options.errors.push(options.errorMessages.sequence_found);
+                        return score;
+                    }
+                }
+            });
+        }
+        return false;
+    };
+
+    validation.wordLowercase = function (options, word, score) {
+        return word.match(/[a-z]/) && score;
+    };
+
+    validation.wordUppercase = function (options, word, score) {
+        return word.match(/[A-Z]/) && score;
+    };
+
+    validation.wordOneNumber = function (options, word, score) {
+        return word.match(/\d+/) && score;
+    };
+
+    validation.wordThreeNumbers = function (options, word, score) {
+        return word.match(/(.*[0-9].*[0-9].*[0-9])/) && score;
+    };
+
+    validation.wordOneSpecialChar = function (options, word, score) {
+        return word.match(/.[!,@,#,$,%,\^,&,*,?,_,~]/) && score;
+    };
+
+    validation.wordTwoSpecialChar = function (options, word, score) {
+        return word.match(/(.*[!,@,#,$,%,\^,&,*,?,_,~].*[!,@,#,$,%,\^,&,*,?,_,~])/) && score;
+    };
+
+    validation.wordUpperLowerCombo = function (options, word, score) {
+        return word.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/) && score;
+    };
+
+    validation.wordLetterNumberCombo = function (options, word, score) {
+        return word.match(/([a-zA-Z])/) && word.match(/([0-9])/) && score;
+    };
+
+    validation.wordLetterNumberCharCombo = function (options, word, score) {
+        return word.match(/([a-zA-Z0-9].*[!,@,#,$,%,\^,&,*,?,_,~])|([!,@,#,$,%,\^,&,*,?,_,~].*[a-zA-Z0-9])/) && score;
+    };
+
+    rulesEngine.validation = validation;
+
+    rulesEngine.executeRules = function (options, word) {
+        var totalScore = 0;
+
+        $.each(options.rules.activated, function (rule, active) {
+            if (active) {
+                var score = options.rules.scores[rule],
+                    result = rulesEngine.validation[rule](options, word, score);
+                if (result) {
+                    totalScore += result;
+                }
+            }
+        });
+
+        return totalScore;
+    };
+
+    // OPTIONS
+    // =======
+
+    options.rules = {};
+
+    options.rules.scores = {
+        wordNotEmail: -100,
+        wordLength: -100,
+        wordSimilarToUsername: -100,
+        wordTwoCharacterClasses: 2,
+        wordRepetitions: -30,
+        wordLowercase: 1,
+        wordUppercase: 3,
+        wordOneNumber: 3,
+        wordThreeNumbers: 5,
+        wordOneSpecialChar: 3,
+        wordTwoSpecialChar: 5,
+        wordUpperLowerCombo: 2,
+        wordLetterNumberCombo: 2,
+        wordLetterNumberCharCombo: 2,
+        wordSequences: -100
+    };
+
+    options.rules.activated = {
+        wordNotEmail: true,
+        wordLength: true,
+        wordSimilarToUsername: true,
+        wordTwoCharacterClasses: false,
+        wordRepetitions: false,
+        wordLowercase: true,
+        wordUppercase: true,
+        wordOneNumber: true,
+        wordThreeNumbers: true,
+        wordOneSpecialChar: true,
+        wordTwoSpecialChar: true,
+        wordUpperLowerCombo: true,
+        wordLetterNumberCombo: true,
+        wordLetterNumberCharCombo: true,
+        wordSequences: true
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     var span = function (text) {
             return '<span style="color: #d52929">' + text + '</span>';
         },
 
-        forbiddenSequences = ["0123456789", "9876543210", "abcdefghijklmnopqrstuvxywz", "qwertyuiopasdfghjklzxcvbnm"],
-
-        validationRules = {
-            wordNotEmail: function (options, word, score) {
-                if (word.match(/^([\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+\.)*[\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+@((((([a-z0-9]{1}[a-z0-9\-]{0,62}[a-z0-9]{1})|[a-z])\.)+[a-z]{2,6})|(\d{1,3}\.){3}\d{1,3}(\:\d{1,5})?)$/i)) {
-                    options.errors.push(options.errorMessages.email_as_password);
-                    return score;
-                }
-            },
-            wordLength: function (options, word, score) {
-                var wordlen = word.length,
-                    lenScore = Math.pow(wordlen, options.raisePower);
-                if (wordlen < options.minChar) {
-                    lenScore = (lenScore + score);
-                    options.errors.push(options.errorMessages.password_too_short);
-                }
-                return lenScore;
-            },
-            wordSimilarToUsername: function (options, word, score) {
-                var username = $(options.usernameField).val();
-                if (username && word.toLowerCase().match(username.toLowerCase())) {
-                    options.errors.push(options.errorMessages.same_as_username);
-                    return score;
-                }
-                return false;
-            },
-            wordTwoCharacterClasses: function (options, word, score) {
-                if (word.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/) ||
-                        (word.match(/([a-zA-Z])/) && word.match(/([0-9])/)) ||
-                        (word.match(/(.[!,@,#,$,%,\^,&,*,?,_,~])/) && word.match(/[a-zA-Z0-9_]/))) {
-                    return score;
-                }
-                options.errors.push(options.errorMessages.two_character_classes);
-                return false;
-            },
-            wordRepetitions: function (options, word, score) {
-                if (word.match(/(.)\1\1/)) {
-                    options.errors.push(options.errorMessages.repeated_character);
-                    return score;
-                }
-                return false;
-            },
-            wordLowercase: function (options, word, score) {
-                return word.match(/[a-z]/) && score;
-            },
-            wordUppercase: function (options, word, score) {
-                return word.match(/[A-Z]/) && score;
-            },
-            wordOneNumber : function (options, word, score) {
-                return word.match(/\d+/) && score;
-            },
-            wordThreeNumbers : function (options, word, score) {
-                return word.match(/(.*[0-9].*[0-9].*[0-9])/) && score;
-            },
-            wordOneSpecialChar : function (options, word, score) {
-                return word.match(/.[!,@,#,$,%,\^,&,*,?,_,~]/) && score;
-            },
-            wordTwoSpecialChar : function (options, word, score) {
-                return word.match(/(.*[!,@,#,$,%,\^,&,*,?,_,~].*[!,@,#,$,%,\^,&,*,?,_,~])/) && score;
-            },
-            wordUpperLowerCombo : function (options, word, score) {
-                return word.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/) && score;
-            },
-            wordLetterNumberCombo : function (options, word, score) {
-                return word.match(/([a-zA-Z])/) && word.match(/([0-9])/) && score;
-            },
-            wordLetterNumberCharCombo : function (options, word, score) {
-                return word.match(/([a-zA-Z0-9].*[!,@,#,$,%,\^,&,*,?,_,~])|([!,@,#,$,%,\^,&,*,?,_,~].*[a-zA-Z0-9])/) && score;
-            },
-            wordSequences: function (options, word, score) {
-                var i, j;
-                if (word.length > 2) {
-                    for (i in forbiddenSequences) {
-                        if (forbiddenSequences.hasOwnProperty(i)) {
-                            for (j = 0; j < (word.length - 3); j += 1) { //iterate the word trough a sliding window of size 3:
-                                if (forbiddenSequences[i].indexOf(word.toLowerCase().substring(j, j + 3)) > -1) {
-                                    options.errors.push(options.errorMessages.sequence_found);
-                                    return score;
-                                }
-                            }
-                        }
-                    }
-                }
-                return false;
-            }
-        },
-
-        options = {
+        optionsOld = {
             errors: [],
             // Options
             minChar: 8,
@@ -129,43 +234,7 @@
                 progress: undefined,
                 verdict: undefined,
                 errors: undefined
-            },
-            // Rules stuff
-            ruleScores: {
-                wordNotEmail: -100,
-                wordLength: -100,
-                wordSimilarToUsername: -100,
-                wordTwoCharacterClasses: 2,
-                wordRepetitions: -30,
-                wordLowercase: 1,
-                wordUppercase: 3,
-                wordOneNumber: 3,
-                wordThreeNumbers: 5,
-                wordOneSpecialChar: 3,
-                wordTwoSpecialChar: 5,
-                wordUpperLowerCombo: 2,
-                wordLetterNumberCombo: 2,
-                wordLetterNumberCharCombo: 2,
-                wordSequences: -100
-            },
-            rules: {
-                wordNotEmail: true,
-                wordLength: true,
-                wordSimilarToUsername: true,
-                wordTwoCharacterClasses: false,
-                wordRepetitions: false,
-                wordLowercase: true,
-                wordUppercase: true,
-                wordOneNumber: true,
-                wordThreeNumbers: true,
-                wordOneSpecialChar: true,
-                wordTwoSpecialChar: true,
-                wordUpperLowerCombo: true,
-                wordLetterNumberCombo: true,
-                wordLetterNumberCharCombo: true,
-                wordSequences: true
-            },
-            validationRules: validationRules
+            }
         },
 
         getContainer = function (container, $el) {
@@ -323,28 +392,10 @@
             if (localOptions.showVerdicts) { $verdict.text(verdictText); }
         },
 
-        calculateScore = function ($el) {
-            var word = $el.val(),
-                totalScore = 0,
-                localOptions = $el.data("pwstrength");
-
-            $.each(localOptions.rules, function (rule, active) {
-                if (active) {
-                    var score = localOptions.ruleScores[rule],
-                        result = localOptions.validationRules[rule](localOptions, word, score);
-                    if (result) {
-                        totalScore += result;
-                    }
-                }
-            });
-            setProgressBar($el, totalScore);
-            return totalScore;
-        },
-
-        methods = {
+        methodsOld = {
             init: function (settings) {
-                var self = this,
-                    allOptions;
+//                 var self = this,
+                var allOptions;
 
                 // Make it deep extend (first param) so it extends too the
                 // rules and other inside objects
@@ -358,7 +409,7 @@
                     $el.on("keyup", function (event) {
                         var localOptions = $el.data("pwstrength");
                         localOptions.errors = [];
-                        calculateScore.call(self, $el);
+//                         calculateScore.call(self, $el);
                         if ($.isFunction(localOptions.onKeyUp)) {
                             localOptions.onKeyUp(event);
                         }
@@ -389,14 +440,14 @@
             },
 
             forceUpdate: function () {
-                var self = this;
+//                 var self = this;
 
                 this.each(function (idx, el) {
                     var $el = $(el),
                         localOptions = $el.data("pwstrength");
 
                     localOptions.errors = [];
-                    calculateScore.call(self, $el);
+//                     calculateScore.call(self, $el);
                 });
             },
 
@@ -458,8 +509,8 @@
     $.fn.pwstrength = function (method) {
         var result;
 
-        if (methods[method]) {
-            result = methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
+        if (methodsOld[method]) {
+            result = methodsOld[method].apply(this, Array.prototype.slice.call(arguments, 1));
         } else if (typeof method === "object" || !method) {
             result = methods.init.apply(this, arguments);
         } else {
