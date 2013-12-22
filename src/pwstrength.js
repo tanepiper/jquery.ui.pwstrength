@@ -14,9 +14,10 @@
 
     var rulesEngine = {},
         validation = {},
-        options = {},
+        defaultOptions = {},
         ui = {},
-        methods = {};
+        methods = {},
+        onKeyUp;
 
     // RULES ENGINE
     // ============
@@ -28,7 +29,7 @@
 
     validation.wordNotEmail = function (options, word, score) {
         if (word.match(/^([\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+\.)*[\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+@((((([a-z0-9]{1}[a-z0-9\-]{0,62}[a-z0-9]{1})|[a-z])\.)+[a-z]{2,6})|(\d{1,3}\.){3}\d{1,3}(\:\d{1,5})?)$/i)) {
-            options.errors.push(options.errorMessages.email_as_password);
+            options.instances.errors.push(options.errorMessages.email_as_password);
             return score;
         }
     };
@@ -38,7 +39,7 @@
             lenScore = Math.pow(wordlen, options.raisePower);
         if (wordlen < options.minChar) {
             lenScore = (lenScore + score);
-            options.errors.push(options.errorMessages.password_too_short);
+            options.instances.errors.push(options.errorMessages.password_too_short);
         }
         return lenScore;
     };
@@ -46,7 +47,7 @@
     validation.wordSimilarToUsername = function (options, word, score) {
         var username = $(options.usernameField).val();
         if (username && word.toLowerCase().match(username.toLowerCase())) {
-            options.errors.push(options.errorMessages.same_as_username);
+            options.instances.errors.push(options.errorMessages.same_as_username);
             return score;
         }
         return false;
@@ -58,13 +59,13 @@
                 (word.match(/(.[!,@,#,$,%,\^,&,*,?,_,~])/) && word.match(/[a-zA-Z0-9_]/))) {
             return score;
         }
-        options.errors.push(options.errorMessages.two_character_classes);
+        options.instances.errors.push(options.errorMessages.two_character_classes);
         return false;
     };
 
     validation.wordRepetitions = function (options, word, score) {
         if (word.match(/(.)\1\1/)) {
-            options.errors.push(options.errorMessages.repeated_character);
+            options.instances.errors.push(options.errorMessages.repeated_character);
             return score;
         }
         return false;
@@ -76,7 +77,7 @@
             $.each(rulesEngine.forbiddenSequences, function (idx, sequence) {
                 for (j = 0; j < (word.length - 3); j += 1) { //iterate the word trough a sliding window of size 3:
                     if (sequence.indexOf(word.toLowerCase().substring(j, j + 3)) > -1) {
-                        options.errors.push(options.errorMessages.sequence_found);
+                        options.instances.errors.push(options.errorMessages.sequence_found);
                         return score;
                     }
                 }
@@ -132,7 +133,11 @@
                     funct = rulesEngine.validation[rule],
                     result;
 
-                if (funct) {
+                if (!$.isFunction(funct)) {
+                    funct = options.rules.extra[rule];
+                }
+
+                if ($.isFunction(funct)) {
                     result = funct(options, word, score);
                     if (result) {
                         totalScore += result;
@@ -147,8 +152,9 @@
     // OPTIONS
     // =======
 
-    options.rules = {};
-    options.rules.scores = {
+    defaultOptions.rules = {};
+    defaultOptions.rules.extra = {};
+    defaultOptions.rules.scores = {
         wordNotEmail: -100,
         wordLength: -100,
         wordSimilarToUsername: -100,
@@ -165,7 +171,7 @@
         wordLetterNumberCombo: 2,
         wordLetterNumberCharCombo: 2
     };
-    options.rules.activated = {
+    defaultOptions.rules.activated = {
         wordNotEmail: true,
         wordLength: true,
         wordSimilarToUsername: true,
@@ -182,38 +188,38 @@
         wordLetterNumberCombo: true,
         wordLetterNumberCharCombo: true
     };
-    options.rules.raisePower = 1.4;
+    defaultOptions.rules.raisePower = 1.4;
 
-    options.common = {};
-    options.common.minChar = 8;
-    options.common.onLoad = undefined;
-    options.common.onKeyUp = undefined;
+    defaultOptions.common = {};
+    defaultOptions.common.minChar = 8;
+    defaultOptions.common.onLoad = undefined;
+    defaultOptions.common.onKeyUp = undefined;
 
-    options.ui = {};
-    options.ui.bootstrap2 = false;
-    options.ui.showPopover = false;
-    options.ui.spanError = function (text) {
+    defaultOptions.ui = {};
+    defaultOptions.ui.bootstrap2 = false;
+    defaultOptions.ui.showPopover = false;
+    defaultOptions.ui.spanError = function (text) {
         return '<span style="color: #d52929">' + text + '</span>';
     };
-    options.ui.errorMessages = {
-        password_too_short: options.ui.spanError("The Password is too short"),
-        email_as_password: options.ui.spanError("Do not use your email as your password"),
-        same_as_username: options.ui.spanError("Your password cannot contain your username"),
-        two_character_classes: options.ui.spanError("Use different character classes"),
-        repeated_character: options.ui.spanError("Too many repetitions"),
-        sequence_found: options.ui.spanError("Your password contains sequences")
+    defaultOptions.ui.errorMessages = {
+        password_too_short: defaultOptions.ui.spanError("The Password is too short"),
+        email_as_password: defaultOptions.ui.spanError("Do not use your email as your password"),
+        same_as_username: defaultOptions.ui.spanError("Your password cannot contain your username"),
+        two_character_classes: defaultOptions.ui.spanError("Use different character classes"),
+        repeated_character: defaultOptions.ui.spanError("Too many repetitions"),
+        sequence_found: defaultOptions.ui.spanError("Your password contains sequences")
     };
-    options.ui.verdicts = ["Weak", "Normal", "Medium", "Strong", "Very Strong"];
-    options.ui.showVerdicts = true;
-    options.ui.showErrors = true;
-    options.ui.usernameField = "#username";
-    options.ui.container = undefined;
-    options.ui.viewports = {
+    defaultOptions.ui.verdicts = ["Weak", "Normal", "Medium", "Strong", "Very Strong"];
+    defaultOptions.ui.showVerdicts = true;
+    defaultOptions.ui.showErrors = true;
+    defaultOptions.ui.usernameField = "#username";
+    defaultOptions.ui.container = undefined;
+    defaultOptions.ui.viewports = {
         progress: undefined,
         verdict: undefined,
         errors: undefined
     };
-    options.ui.scores = [17, 26, 40, 50];
+    defaultOptions.ui.scores = [17, 26, 40, 50];
 
     // USER INTERFACE
     // ==============
@@ -327,12 +333,12 @@
 
     ui.initUI = function (options, $el) {
         if (options.ui.showPopover) {
-            ui.initPopover();
+            ui.initPopover(options, $el);
         } else {
-            ui.initErrorList();
-            ui.initVerdict();
+            ui.initErrorList(options, $el);
+            ui.initVerdict(options, $el);
         }
-        ui.initProgressBar();
+        ui.initProgressBar(options, $el);
     };
 
     ui.possibleProgressBarClasses = ["danger", "warning", "success"];
@@ -359,11 +365,16 @@
         $verdict.text(text);
     };
 
-    ui.updateErrors = function (options, $el, errors) {
-        // TODO
+    ui.updateErrors = function (options, $el) {
+        var $errors = ui.getUIElements(options, $el).$errors,
+            html = "";
+        $.each(options.instances.errors, function (idx, err) {
+            html += "<li>" + err + "</li>";
+        });
+        $errors.html(html);
     };
 
-    ui.updateUI = function (options, $el, score, errors) {
+    ui.updateUI = function (options, $el, score) {
         var barCss, barPercentage, verdictText;
 
         if (score === 0) {
@@ -397,156 +408,103 @@
             ui.updateVerdict(options, $el, verdictText);
         }
         if (options.ui.showPopover || options.ui.showErrors) {
-            ui.updateErrors(options, $el, errors);
+            ui.updateErrors(options, $el);
+        }
+        if (options.ui.showPopover) {
+            $el.popover("show");
         }
     };
 
+    // EVENT HANDLER
+    // =============
 
+    onKeyUp = function (event) {
+        var $el = $(event.target),
+            options = $el.data("pwstrength-bootstrap"),
+            word = $el.val(),
+            score;
 
+        options.instances.errors = [];
+        score = rulesEngine.executeRules(options, word);
+        ui.updateUI(options, $el, score);
 
+        if ($.isFunction(options.common.onKeyUp)) {
+            options.common.onKeyUp();
+        }
+    };
 
+    // PUBLIC METHODS
+    // ==============
 
+    methods.init = function (settings) {
+        this.each(function (idx, el) {
+            // Make it deep extend (first param) so it extends too the
+            // rules and other inside objects
+            var localOptions = $.extend(true, defaultOptions, settings),
+                $el = $(el);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    var methodsOld = {
-            init: function (settings) {
-//                 var self = this,
-                var allOptions;
-
-                // Make it deep extend (first param) so it extends too the
-                // rules and other inside objects
-                allOptions = $.extend(true, options, settings);
-
-                this.each(function (idx, el) {
-                    var $el = $(el);
-
-                    $el.data("pwstrength", allOptions);
-
-                    $el.on("keyup", function (event) {
-                        var localOptions = $el.data("pwstrength");
-                        localOptions.errors = [];
-//                         calculateScore.call(self, $el);
-                        if ($.isFunction(localOptions.onKeyUp)) {
-                            localOptions.onKeyUp(event);
-                        }
-                    });
-
-                    initProgressBar(allOptions, $el);
-                    initVerdict(allOptions, $el, allOptions.verdicts[0]);
-
-                    if ($.isFunction(allOptions.onLoad)) {
-                        allOptions.onLoad();
-                    }
-                });
-
-                return this;
-            },
-
-            destroy: function () {
-                this.each(function (idx, el) {
-                    var $el = $(el),
-                        localOptions = $el.data("pwstrength"),
-                        $container = getContainer(localOptions.container, $el);
-
-                    $container.find("span.password-verdict").remove();
-                    $container.find("div.progress").remove();
-                    $container.find("ul.error-list").remove();
-                    $el.removeData("pwstrength");
-                });
-            },
-
-            forceUpdate: function () {
-//                 var self = this;
-
-                this.each(function (idx, el) {
-                    var $el = $(el),
-                        localOptions = $el.data("pwstrength");
-
-                    localOptions.errors = [];
-//                     calculateScore.call(self, $el);
-                });
-            },
-
-            outputErrorList: function () {
-                this.each(function (idx, el) {
-                    var output = '<ul class="error-list">',
-                        $el = $(el),
-                        localOptions = $el.data("pwstrength"),
-                        $container = getContainer(localOptions.container, $el),
-                        $verdict;
-
-                    $container.find("ul.error-list").remove();
-                    if ($el.val().length > 0 && localOptions.errors.length > 0) {
-                        $.each(localOptions.errors, function (i, item) {
-                            output += '<li>' + item + '</li>';
-                        });
-                        output += '</ul>';
-                        if (localOptions.viewports.errors) {
-                            $container.find(localOptions.viewports.errors).html(output);
-                        } else {
-                            output = $(output);
-                            $verdict = $container.find("span.password-verdict");
-                            if ($verdict.length > 0) {
-                                el = $verdict;
-                            }
-                            output.insertAfter(el);
-                        }
-                    }
-
-                    if (localOptions.showPopover) {
-                        initPopover(localOptions, $el);
-                    }
-                });
-            },
-
-            addRule: function (name, method, score, active) {
-                this.each(function (idx, el) {
-                    var localOptions = $(el).data("pwstrength");
-
-                    localOptions.rules[name] = active;
-                    localOptions.ruleScores[name] = score;
-                    localOptions.validationRules[name] = method;
-                });
-            },
-
-            changeScore: function (rule, score) {
-                this.each(function (idx, el) {
-                    $(el).data("pwstrength").ruleScores[rule] = score;
-                });
-            },
-
-            ruleActive: function (rule, active) {
-                this.each(function (idx, el) {
-                    $(el).data("pwstrength").rules[rule] = active;
-                });
+            localOptions.instances = {};
+            $el.data("pwstrength-bootstrap", localOptions);
+            $el.on("keyup", onKeyUp);
+            ui.initUI(localOptions, $el);
+            if ($.isFunction(localOptions.common.onLoad)) {
+                localOptions.common.onLoad();
             }
-        };
+        });
+
+        return this;
+    };
+
+    methods.destroy = function () {
+        this.each(function (idx, el) {
+            var $el = $(el),
+                options = $el.data("pwstrength-bootstrap"),
+                elements = ui.getUIElements(options, $el);
+            elements.$progressbar.remove();
+            elements.$verdict.remove();
+            elements.$errors.remove();
+            $el.removeData("pwstrength-bootstrap");
+        });
+    };
+
+    methods.forceUpdate = function () {
+        this.each(function (idx, el) {
+            var event = { target: el };
+            onKeyUp(event);
+        });
+    };
+
+    methods.addRule = function (name, method, score, active) {
+        this.each(function (idx, el) {
+            var options = $(el).data("pwstrength-bootstrap");
+
+            options.rules.activated[name] = active;
+            options.rules.scores[name] = score;
+            options.rules.extra[name] = method;
+        });
+    };
+
+    methods.changeScore = function (rule, score) {
+        this.each(function (idx, el) {
+            $(el).data("pwstrength-bootstrap").rules.scores[rule] = score;
+        });
+    };
+
+    methods.ruleActive = function (rule, active) {
+        this.each(function (idx, el) {
+            $(el).data("pwstrength-bootstrap").rules.activated[rule] = active;
+        });
+    };
 
     $.fn.pwstrength = function (method) {
         var result;
 
-        if (methodsOld[method]) {
-            result = methodsOld[method].apply(this, Array.prototype.slice.call(arguments, 1));
+        if (methods[method]) {
+            result = methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
         } else if (typeof method === "object" || !method) {
             result = methods.init.apply(this, arguments);
         } else {
-            $.error("Method " +  method + " does not exist on jQuery.pwstrength");
+            $.error("Method " +  method + " does not exist on jQuery.pwstrength-bootstrap");
         }
 
         return result;
