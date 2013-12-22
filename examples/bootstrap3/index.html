@@ -6,7 +6,8 @@
 </head>
 <body>
     <div class="container">
-        <form role="form" style="margin-top: 20px;">
+        <h1>Bootstrap 3 Password Strength Meter Example</h1>
+        <form role="form" style="margin-top: 20px; margin-bottom: 20px;">
             <div class="row" id="pwd-container">
                 <div class="col-sm-4">
                     <div class="form-group">
@@ -22,25 +23,25 @@
                 <div id="messages" class="col-sm-12"></div>
             </div>
         </form>
+        <p><a href="..">Go back</a></p>
     </div>
 
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    <script type="text/javascript" src="pwstrength.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script type="text/javascript" src="../pwstrength.js"></script>
     <script type="text/javascript">
         jQuery(document).ready(function () {
             "use strict";
-            var options = {
-                bootstrap3: true,
+            var options = {};
+            options.ui = {
                 container: "#pwd-container",
                 viewports: {
                     progress: ".pwstrength_viewport_progress",
                     verdict: ".pwstrength_viewport_verdict"
-                },
+                }
+            };
+            options.common = {
                 onLoad: function () {
                     $('#messages').text('Start typing password');
-                },
-                onKeyUp: function (evt) {
-                    $(evt.target).pwstrength("outputErrorList");
                 }
             };
             $(':password').pwstrength(options);
