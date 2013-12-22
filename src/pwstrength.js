@@ -29,25 +29,25 @@
 
     validation.wordNotEmail = function (options, word, score) {
         if (word.match(/^([\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+\.)*[\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+@((((([a-z0-9]{1}[a-z0-9\-]{0,62}[a-z0-9]{1})|[a-z])\.)+[a-z]{2,6})|(\d{1,3}\.){3}\d{1,3}(\:\d{1,5})?)$/i)) {
-            options.instances.errors.push(options.errorMessages.email_as_password);
+            options.instances.errors.push(options.ui.spanError(options, "email_as_password"));
             return score;
         }
     };
 
     validation.wordLength = function (options, word, score) {
         var wordlen = word.length,
-            lenScore = Math.pow(wordlen, options.raisePower);
-        if (wordlen < options.minChar) {
+            lenScore = Math.pow(wordlen, options.rules.raisePower);
+        if (wordlen < options.common.minChar) {
             lenScore = (lenScore + score);
-            options.instances.errors.push(options.errorMessages.password_too_short);
+            options.instances.errors.push(options.ui.spanError(options, "password_too_short"));
         }
         return lenScore;
     };
 
     validation.wordSimilarToUsername = function (options, word, score) {
-        var username = $(options.usernameField).val();
+        var username = $(options.common.usernameField).val();
         if (username && word.toLowerCase().match(username.toLowerCase())) {
-            options.instances.errors.push(options.errorMessages.same_as_username);
+            options.instances.errors.push(options.ui.spanError(options, "same_as_username"));
             return score;
         }
         return false;
@@ -59,29 +59,33 @@
                 (word.match(/(.[!,@,#,$,%,\^,&,*,?,_,~])/) && word.match(/[a-zA-Z0-9_]/))) {
             return score;
         }
-        options.instances.errors.push(options.errorMessages.two_character_classes);
+        options.instances.errors.push(options.ui.spanError(options, "two_character_classes"));
         return false;
     };
 
     validation.wordRepetitions = function (options, word, score) {
         if (word.match(/(.)\1\1/)) {
-            options.instances.errors.push(options.errorMessages.repeated_character);
+            options.instances.errors.push(options.ui.spanError(options, "repeated_character"));
             return score;
         }
         return false;
     };
 
     validation.wordSequences = function (options, word, score) {
-        var j;
+        var found = false,
+            j;
         if (word.length > 2) {
             $.each(rulesEngine.forbiddenSequences, function (idx, sequence) {
                 for (j = 0; j < (word.length - 3); j += 1) { //iterate the word trough a sliding window of size 3:
                     if (sequence.indexOf(word.toLowerCase().substring(j, j + 3)) > -1) {
-                        options.instances.errors.push(options.errorMessages.sequence_found);
-                        return score;
+                        found = true;
                     }
                 }
             });
+            if (found) {
+                options.instances.errors.push(options.ui.spanError(options, "sequence_found"));
+                return score;
+            }
         }
         return false;
     };
@@ -192,27 +196,28 @@
 
     defaultOptions.common = {};
     defaultOptions.common.minChar = 8;
+    defaultOptions.common.usernameField = "#username";
     defaultOptions.common.onLoad = undefined;
     defaultOptions.common.onKeyUp = undefined;
 
     defaultOptions.ui = {};
     defaultOptions.ui.bootstrap2 = false;
     defaultOptions.ui.showPopover = false;
-    defaultOptions.ui.spanError = function (text) {
+    defaultOptions.ui.spanError = function (options, key) {
+        var text = options.ui.errorMessages[key];
         return '<span style="color: #d52929">' + text + '</span>';
     };
     defaultOptions.ui.errorMessages = {
-        password_too_short: defaultOptions.ui.spanError("The Password is too short"),
-        email_as_password: defaultOptions.ui.spanError("Do not use your email as your password"),
-        same_as_username: defaultOptions.ui.spanError("Your password cannot contain your username"),
-        two_character_classes: defaultOptions.ui.spanError("Use different character classes"),
-        repeated_character: defaultOptions.ui.spanError("Too many repetitions"),
-        sequence_found: defaultOptions.ui.spanError("Your password contains sequences")
+        password_too_short: "The Password is too short",
+        email_as_password: "Do not use your email as your password",
+        same_as_username: "Your password cannot contain your username",
+        two_character_classes: "Use different character classes",
+        repeated_character: "Too many repetitions",
+        sequence_found: "Your password contains sequences"
     };
     defaultOptions.ui.verdicts = ["Weak", "Normal", "Medium", "Strong", "Very Strong"];
     defaultOptions.ui.showVerdicts = true;
     defaultOptions.ui.showErrors = true;
-    defaultOptions.ui.usernameField = "#username";
     defaultOptions.ui.container = undefined;
     defaultOptions.ui.viewports = {
         progress: undefined,
@@ -429,7 +434,7 @@
         ui.updateUI(options, $el, score);
 
         if ($.isFunction(options.common.onKeyUp)) {
-            options.common.onKeyUp();
+            options.common.onKeyUp(event);
         }
     };
 

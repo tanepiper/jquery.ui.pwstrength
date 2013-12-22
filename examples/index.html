@@ -22,12 +22,12 @@
         jQuery(document).ready(function () {
             "use strict";
             var options = {
-                onLoad: function () {
-                    $('#messages').text('Start typing password');
+                common: {
+                    onLoad: function () {
+                        $('#messages').text('Start typing password');
+                    }
                 },
-                onKeyUp: function (evt) {
-                    $(evt.target).pwstrength("outputErrorList");
-                }
+                ui: { bootstrap2: true }
             };
             $(':password').pwstrength(options);
         });
