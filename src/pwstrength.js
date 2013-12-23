@@ -24,7 +24,7 @@
 
     rulesEngine.forbiddenSequences = [
         "0123456789", "9876543210", "abcdefghijklmnopqrstuvxywz",
-        "qwertyuiopasdfghjklzxcvbnm"
+        "qwertyuiop", "asdfghjkl", "zxcvbnm"
     ];
 
     validation.wordNotEmail = function (options, word, score) {
@@ -160,11 +160,11 @@
     defaultOptions.rules.extra = {};
     defaultOptions.rules.scores = {
         wordNotEmail: -100,
-        wordLength: -100,
+        wordLength: -50,
         wordSimilarToUsername: -100,
-        wordSequences: -100,
+        wordSequences: -50,
         wordTwoCharacterClasses: 2,
-        wordRepetitions: -30,
+        wordRepetitions: -25,
         wordLowercase: 1,
         wordUppercase: 3,
         wordOneNumber: 3,
@@ -195,7 +195,7 @@
     defaultOptions.rules.raisePower = 1.4;
 
     defaultOptions.common = {};
-    defaultOptions.common.minChar = 8;
+    defaultOptions.common.minChar = 6;
     defaultOptions.common.usernameField = "#username";
     defaultOptions.common.onLoad = undefined;
     defaultOptions.common.onKeyUp = undefined;
@@ -217,14 +217,14 @@
     };
     defaultOptions.ui.verdicts = ["Weak", "Normal", "Medium", "Strong", "Very Strong"];
     defaultOptions.ui.showVerdicts = true;
-    defaultOptions.ui.showErrors = true;
+    defaultOptions.ui.showErrors = false;
     defaultOptions.ui.container = undefined;
     defaultOptions.ui.viewports = {
         progress: undefined,
         verdict: undefined,
         errors: undefined
     };
-    defaultOptions.ui.scores = [17, 26, 40, 50];
+    defaultOptions.ui.scores = [14, 26, 38, 50];
 
     // USER INTERFACE
     // ==============
@@ -379,32 +379,34 @@
         $errors.html(html);
     };
 
+    ui.percentage = function (score, maximun) {
+        var result = Math.floor(100 * score / maximun);
+        result = result < 0 ? 0 : result;
+        result = result > 100 ? 100 : result;
+        return result;
+    };
+
     ui.updateUI = function (options, $el, score) {
         var barCss, barPercentage, verdictText;
 
-        if (score === 0) {
+        barPercentage = ui.percentage(score, options.ui.scores[3]);
+        if (score <= 0) {
             barCss = "danger";
-            barPercentage = 0;
             verdictText = "";
         } else if (score < options.ui.scores[0]) {
             barCss = "danger";
-            barPercentage = 5;
             verdictText = options.ui.verdicts[0];
-        } else if (score >= options.ui.scores[0] && score < options.ui.scores[1]) {
+        } else if (score < options.ui.scores[1]) {
             barCss = "danger";
-            barPercentage = 25;
             verdictText = options.ui.verdicts[1];
-        } else if (score >= options.ui.scores[1] && score < options.ui.scores[2]) {
+        } else if (score < options.ui.scores[2]) {
             barCss = "warning";
-            barPercentage = 50;
             verdictText = options.ui.verdicts[2];
-        } else if (score >= options.ui.scores[2] && score < options.ui.scores[3]) {
+        } else if (score < options.ui.scores[3]) {
             barCss = "warning";
-            barPercentage = 75;
             verdictText = options.ui.verdicts[3];
-        } else if (score >= options.ui.scores[3]) {
+        } else {
             barCss = "success";
-            barPercentage = 100;
             verdictText = options.ui.verdicts[4];
         }
 
