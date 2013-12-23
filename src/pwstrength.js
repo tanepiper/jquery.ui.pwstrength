@@ -156,6 +156,12 @@
     // OPTIONS
     // =======
 
+    defaultOptions.common = {};
+    defaultOptions.common.minChar = 6;
+    defaultOptions.common.usernameField = "#username";
+    defaultOptions.common.onLoad = undefined;
+    defaultOptions.common.onKeyUp = undefined;
+
     defaultOptions.rules = {};
     defaultOptions.rules.extra = {};
     defaultOptions.rules.scores = {
@@ -193,12 +199,6 @@
         wordLetterNumberCharCombo: true
     };
     defaultOptions.rules.raisePower = 1.4;
-
-    defaultOptions.common = {};
-    defaultOptions.common.minChar = 6;
-    defaultOptions.common.usernameField = "#username";
-    defaultOptions.common.onLoad = undefined;
-    defaultOptions.common.onKeyUp = undefined;
 
     defaultOptions.ui = {};
     defaultOptions.ui.bootstrap2 = false;

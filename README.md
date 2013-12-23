@@ -8,21 +8,64 @@ password.
 
 Dual licensed under the MIT and GPL licenses.
 
+[jQuery plugins registry entry](http://plugins.jquery.com/pwstrength-bootstrap/)
+
 
 ## Requirements
 
-* jQuery (tested with 1.8.3)
-* Bootstrap CSS for progress bars (tested with 2.X and 3.0.0)
+* jQuery 1.7 or higher
+* Bootstrap 2 or 3
 
 
 ## Options
 
+The plugin expect the options to follow this structure:
+
+```javascript
+options = {
+    common: {},
+    rules: {},
+    ui: {}
+};
+```
+
+Let's see the options of each section.
+
+### Common
+
 * __minChar__:
 
-  Default: `8` (Integer)
+  Default: `6` (Integer)
 
   Sets the minimum required of characters for a password to not be considered
   too weak.
+
+* __usernameField__:
+
+  Default: `"#username"` (String)
+
+  The username field to match a password to, to ensure the user does not use
+  the same value for their password.
+
+* __onLoad__:
+
+  Default: `undefined` (Function)
+
+  A callback function, fired on load of the widget. No arguments will be
+  passed.
+
+* __onKeyUp__:
+
+  Default: `undefined` (Function)
+
+  A callback function, fired on key up when the user is typing. The `keyup`
+  event will be passed as an argument.
+
+### Rules
+
+### User Interface
+
+
 
 * __bootstrap3__:
 
@@ -80,12 +123,6 @@ Dual licensed under the MIT and GPL licenses.
   strength meter. Each one can be a CSS selector (`"#progressbar"`) or a DOM
   node reference.
 
-* __usernameField__:
-
-  Default: `"#username"` (String)
-
-  The username field to match a password to, to ensure the user does not use
-  the same value for their password.
 
 * __raisePower__:
 
@@ -93,17 +130,7 @@ Dual licensed under the MIT and GPL licenses.
 
   The value used to modify the final score, allows you to tailor your results.
 
-* __onLoad__:
 
-  Default: `undefined` (Function)
-
-  A callback function, fired on load of the widget.
-
-* __onKeyUp__:
-
-  Default: `undefined` (Function)
-
-  A callback function, fired on key up when the user is typing.
 
 * __rules__:
 

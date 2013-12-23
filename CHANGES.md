@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 1.0.0
+
+- Complete refactor of the code. This is a cleaner version, easier to extend
+  and mantain.
+- Broke backwards compatibility. Bootstrap 3 is the default option now, other
+  options default values have changed. Options structure has changed too.
+- Old tests have been renamed to examples, which is what they really are. Leave
+  room for real tests.
+
 ## 0.7.0
 
 - New rule to check for sequences in the password. It penalizes finding
