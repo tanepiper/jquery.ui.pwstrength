@@ -1,7 +1,5 @@
 # jQuery Password Strength Meter for Twitter Bootstrap
 
-[![Code Climate](https://codeclimate.com/github/ablanco/jquery.pwstrength.bootstrap.png)](https://codeclimate.com/github/ablanco/jquery.pwstrength.bootstrap)
-
 The jQuery Password Strength Meter is a plugin for Twitter Bootstrap that
 provides rulesets for visualy displaying the quality of a users typed in
 password.

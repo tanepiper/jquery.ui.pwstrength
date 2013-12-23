@@ -17,7 +17,8 @@
         defaultOptions = {},
         ui = {},
         methods = {},
-        onKeyUp;
+        onKeyUp,
+        applyToAll;
 
     // RULES ENGINE
     // ============
@@ -490,16 +491,18 @@
         });
     };
 
-    methods.changeScore = function (rule, score) {
+    applyToAll = function (rule, prop, value) {
         this.each(function (idx, el) {
-            $(el).data("pwstrength-bootstrap").rules.scores[rule] = score;
+            $(el).data("pwstrength-bootstrap").rules[prop][rule] = value;
         });
     };
 
+    methods.changeScore = function (rule, score) {
+        applyToAll.call(this, rule, "scores", score);
+    };
+
     methods.ruleActive = function (rule, active) {
-        this.each(function (idx, el) {
-            $(el).data("pwstrength-bootstrap").rules.activated[rule] = active;
-        });
+        applyToAll.call(this, rule, "activated", active);
     };
 
     $.fn.pwstrength = function (method) {
