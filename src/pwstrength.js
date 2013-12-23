@@ -282,26 +282,23 @@
         }
     };
 
-    ui.initVerdict = function (options, $el) {
-        var $container = ui.getContainer(options, $el),
-            verdict = "<span class='password-verdict'></span>";
-
-        if (options.ui.viewports.verdict) {
-            $container.find(options.ui.viewports.verdict).append(verdict);
+    ui.initHelper = function (options, $el, html, viewport) {
+        var $container = ui.getContainer(options, $el);
+        if (viewport) {
+            $container.find(viewport).append(html);
         } else {
-            $(verdict).insertAfter($el);
+            $(html).insertAfter($el);
         }
     };
 
-    ui.initErrorList = function (options, $el) {
-        var $container = ui.getContainer(options, $el),
-            errorList = "<ul class='error-list'></ul>";
+    ui.initVerdict = function (options, $el) {
+        ui.initHelper(options, $el, "<span class='password-verdict'></span>",
+                      options.ui.viewports.verdict);
+    };
 
-        if (options.ui.viewports.errors) {
-            $container.find(options.ui.viewports.errors).append(errorList);
-        } else {
-            $(errorList).insertAfter($el);
-        }
+    ui.initErrorList = function (options, $el) {
+        ui.initHelper(options, $el, "<ul class='error-list'></ul>",
+                      options.ui.viewports.errors);
     };
 
     ui.initPopover = function (options, $el, verdictText) {
