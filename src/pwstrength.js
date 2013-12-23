@@ -457,7 +457,8 @@
         this.each(function (idx, el) {
             // Make it deep extend (first param) so it extends too the
             // rules and other inside objects
-            var localOptions = $.extend(true, defaultOptions, settings),
+            var clonedDefaults = $.extend(true, {}, defaultOptions),
+                localOptions = $.extend(true, clonedDefaults, settings),
                 $el = $(el);
 
             localOptions.instances = {};
