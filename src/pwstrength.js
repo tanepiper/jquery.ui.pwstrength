@@ -257,10 +257,7 @@
         }
         result.$progressbar = $progressbar;
 
-        if (options.ui.showPopover) {
-            result.$verdict = $container.find(".popover span.password-verdict");
-            result.$errors = $container.find(".popover ul.error-list");
-        } else {
+        if (!options.ui.showPopover) {
             if (options.ui.viewports.verdict) {
                 $verdict = $container.find(options.ui.viewports.verdict).find("span.password-verdict");
             } else {
@@ -318,14 +315,23 @@
         }
     };
 
-    ui.initPopover = function (options, $el) {
+    ui.initPopover = function (options, $el, verdictText) {
         var placement = "auto top",
-            html;
+            html = "";
 
         if (options.ui.bootstrap2) { placement = "top"; }
 
-        html = "<h5><span class='password-verdict'></span></h5>" +
-            "<div><ul class='error-list'></ul></div>";
+        if (options.ui.showVerdicts && verdictText.length > 0) {
+            html = "<h5><span class='password-verdict'>" + verdictText +
+                "</span></h5>";
+        }
+        if (options.ui.showErrors) {
+            html += "<div><ul class='error-list'>";
+            $.each(options.instances.errors, function (idx, err) {
+                html += "<li>" + err + "</li>";
+            });
+            html += "</ul></div>";
+        }
 
         $el.popover("destroy");
         $el.popover({
@@ -334,15 +340,17 @@
             trigger: "manual",
             content: html
         });
+        $el.popover("show");
     };
 
     ui.initUI = function (options, $el) {
-        if (options.ui.showPopover) {
-            ui.initPopover(options, $el);
-        } else {
+        if (!options.ui.showPopover) {
             ui.initErrorList(options, $el);
             ui.initVerdict(options, $el);
         }
+        // The popover can't be initialized here, it requires to be destroyed
+        // and recreated every time its content changes, because it calculates
+        // its position based on the size of its content
         ui.initProgressBar(options, $el);
     };
 
@@ -411,14 +419,16 @@
         }
 
         ui.updateProgressBar(options, $el, barCss, barPercentage);
-        if (options.ui.showPopover || options.ui.showVerdicts) {
-            ui.updateVerdict(options, $el, verdictText);
-        }
-        if (options.ui.showPopover || options.ui.showErrors) {
-            ui.updateErrors(options, $el);
-        }
         if (options.ui.showPopover) {
-            $el.popover("show");
+            // Popover can't be updated, it has to be recreated
+            ui.initPopover(options, $el, verdictText);
+        } else {
+            if (options.ui.showVerdicts) {
+                ui.updateVerdict(options, $el, verdictText);
+            }
+            if (options.ui.showErrors) {
+                ui.updateErrors(options, $el);
+            }
         }
     };
 
