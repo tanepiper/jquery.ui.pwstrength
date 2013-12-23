@@ -239,38 +239,26 @@
         return $container;
     };
 
+    ui.findElement = function ($container, viewport, cssSelector) {
+        if (viewport) {
+            return $container.find(viewport).find(cssSelector);
+        }
+        return $container.find(cssSelector);
+    };
+
     ui.getUIElements = function (options, $el) {
-        var $container, $verdict, $progressbar, $errors, result;
+        var $container, result;
 
         if (options.instances.viewports) {
             return options.instances.viewports;
         }
 
         result = {};
-
         $container = ui.getContainer(options, $el);
-
-        if (options.ui.viewports.progress) {
-            $progressbar = $container.find(options.ui.viewports.progress).find("div.progress");
-        } else {
-            $progressbar = $container.find("div.progress");
-        }
-        result.$progressbar = $progressbar;
-
+        result.$progressbar = ui.findElement($container, options.ui.viewports.progress, "div.progress");
         if (!options.ui.showPopover) {
-            if (options.ui.viewports.verdict) {
-                $verdict = $container.find(options.ui.viewports.verdict).find("span.password-verdict");
-            } else {
-                $verdict = $container.find("span.password-verdict");
-            }
-            result.$verdict = $verdict;
-
-            if (options.ui.viewports.errors) {
-                $errors = $container.find(options.ui.viewports.errors).find("ul.error-list");
-            } else {
-                $errors = $container.find("ul.error-list");
-            }
-            result.$errors = $errors;
+            result.$verdict = ui.findElement($container, options.ui.viewports.verdict, "span.password-verdict");
+            result.$errors = ui.findElement($container, options.ui.viewports.errors, "ul.error-list");
         }
 
         options.instances.viewports = result;
