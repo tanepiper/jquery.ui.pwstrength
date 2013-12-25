@@ -6,14 +6,15 @@
         "type": "git",
         "url": "https://github.com/ablanco/jquery.pwstrength.bootstrap"
     },
-    "licenses" : [{
+    "licenses" : [
+        {
             "type" : "GPL v3",
             "url" : "https://raw.github.com/ablanco/jquery.pwstrength.bootstrap/master/GPL-LICENSE.txt"
         }, {
             "type": "MIT",
             "url": "https://raw.github.com/ablanco/jquery.pwstrength.bootstrap/master/MIT-LICENSE.txt"
         }
-    ]
+    ],
     "devDependencies": {
         "grunt": "~0.4.2",
         "grunt-jslint": "~1.1.2",

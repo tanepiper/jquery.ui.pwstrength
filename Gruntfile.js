@@ -44,6 +44,9 @@ module.exports = function (grunt) {
             makeDir: {
                 command: 'mkdir -p dist'
             },
+            copyFile: {
+                command: '<%= concat.dist.dest %> examples/pwstrength.js'
+            },
             moveFiles: {
                 command: 'mv <%= pkg.name %>-<%= pkg.version %>* dist/'
             }
