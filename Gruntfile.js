@@ -41,11 +41,11 @@ module.exports = function (grunt) {
             }
         },
         shell: {
+            copyFile: {
+                command: 'cp <%= concat.dist.dest %> examples/pwstrength.js'
+            },
             makeDir: {
                 command: 'mkdir -p dist'
-            },
-            copyFile: {
-                command: '<%= concat.dist.dest %> examples/pwstrength.js'
             },
             moveFiles: {
                 command: 'mv <%= pkg.name %>-<%= pkg.version %>* dist/'
