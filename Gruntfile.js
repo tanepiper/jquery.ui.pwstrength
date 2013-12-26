@@ -58,7 +58,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-shell');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-jasmine-node');
 
     // Default task(s)
-    grunt.registerTask('default', ['jslint', 'concat', 'uglify', 'shell']);
+    grunt.registerTask('default', ['jslint', 'concat', 'uglify', 'shell', 'jasmine_node']);
 };
