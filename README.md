@@ -315,3 +315,27 @@ python -m SimpleHTTPServer
 ```
 
 And go to [localhost:8000](http://localhost:8000).
+
+
+## Build
+
+The build process relies on [http://gruntjs.com/](Grunt). To use it you need to
+have [http://nodejs.org/](node.js) and grunt-cli installed on your system.
+Assuming you have node.js in your linux system, you'll need to do something
+like this:
+
+```bash
+sudo npm install -g grunt-cli
+```
+
+Now you have the grunt command line utility installed globally. Then you only
+need to execute this in the project directory:
+
+```bash
+npm install -d
+grunt
+```
+
+It will check the source files, and build a minified version with its
+corresponding source map. The generated files will be available in the `dist`
+directory.
