@@ -319,19 +319,24 @@ python -m SimpleHTTPServer
 And go to [localhost:8000](http://localhost:8000).
 
 
-## Build
+## Build and Test
 
-The build process relies on [http://gruntjs.com/](Grunt). To use it you need to
-have [http://nodejs.org/](node.js) and grunt-cli installed on your system.
-Assuming you have node.js in your linux system, you'll need to do something
-like this:
+The build and testing processes rely on [http://gruntjs.com/](Grunt). To use
+them you need to have [http://nodejs.org/](node.js) and grunt-cli installed on
+your system. Assuming you have node.js in your Linux system, you'll need to do
+something like this:
 
 ```bash
 sudo npm install -g grunt-cli
 ```
 
-Now you have the grunt command line utility installed globally. Then you only
-need to execute this in the project directory:
+Now you have the grunt command line utility installed globally.
+
+
+### Bundle and minified
+
+To generate the bundle and the minified file you only need to execute this in
+the project directory:
 
 ```bash
 npm install -d
@@ -341,3 +346,21 @@ grunt
 It will check the source files, and build a minified version with its
 corresponding source map. The generated files will be available in the `dist`
 directory.
+
+
+### Testing
+
+To run the tests the only thing you need to do is execute this in the project
+directory:
+
+```bash
+npm install -d
+grunt test
+```
+
+It will check all the source files with [http://jslint.com](JSLint) and run the
+tests, which are written with [http://jasmine.github.io/](Jasmine). You'll find
+the tests source code in the `spec` directory.
+
+[https://travis-ci.org/ablanco/jquery.pwstrength.bootstrap](Travis) is being
+used for continuos integration. You can check there if the tests are passing.
