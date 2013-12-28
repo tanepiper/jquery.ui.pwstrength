@@ -1,5 +1,5 @@
-/*jslint browser: true, sloppy: true */
-/*global defaultOptions */
+/*jslint browser: true */
+/*global */
 
 /*
 * jQuery Password Strength plugin for Twitter Bootstrap
@@ -8,6 +8,8 @@
 * Copyright (c) 2013 Alejandro Blanco
 * Dual licensed under the MIT and GPL licenses.
 */
+
+var defaultOptions = {};
 
 defaultOptions.common = {};
 defaultOptions.common.minChar = 6;
@@ -57,6 +59,7 @@ defaultOptions.ui = {};
 defaultOptions.ui.bootstrap2 = false;
 defaultOptions.ui.showPopover = false;
 defaultOptions.ui.spanError = function (options, key) {
+    "use strict";
     var text = options.ui.errorMessages[key];
     return '<span style="color: #d52929">' + text + '</span>';
 };

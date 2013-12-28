@@ -6,18 +6,7 @@
 * Dual licensed under the MIT and GPL licenses.
 */
 
-// Source: src/closure-pre.js
-
-(function ($) {
-"use strict";
-
-var module = { exports: '' },
-    defaultOptions = {},
-    ui = {},
-    methods = {},
-    onKeyUp,
-    applyToAll;
-
+(function (jQuery) {
 // Source: src/rules.js
 
 
@@ -25,13 +14,14 @@ var module = { exports: '' },
 
 var rulesEngine = {};
 
-if (!$ && module && module.exports) {
-    var $ = require("jquery");
-}
+try {
+    if (!jQuery && module && module.exports) {
+        var jQuery = require("jquery");
+    }
+} catch (ignore) {}
 
-(function (rulesEngine, $) {
+(function ($, rulesEngine) {
     "use strict";
-
     var validation = {};
 
     rulesEngine.forbiddenSequences = [
@@ -164,14 +154,20 @@ if (!$ && module && module.exports) {
 
         return totalScore;
     };
-}(rulesEngine, $));
+}(jQuery, rulesEngine));
 
-module.exports = rulesEngine;
+try {
+    if (module && module.exports) {
+        module.exports = rulesEngine;
+    }
+} catch (ignore) {}
 
 // Source: src/options.js
 
 
 
+
+var defaultOptions = {};
 
 defaultOptions.common = {};
 defaultOptions.common.minChar = 6;
@@ -221,6 +217,7 @@ defaultOptions.ui = {};
 defaultOptions.ui.bootstrap2 = false;
 defaultOptions.ui.showPopover = false;
 defaultOptions.ui.spanError = function (options, key) {
+    "use strict";
     var text = options.ui.errorMessages[key];
     return '<span style="color: #d52929">' + text + '</span>';
 };
@@ -248,291 +245,301 @@ defaultOptions.ui.scores = [14, 26, 38, 50];
 
 
 
-ui.getContainer = function (options, $el) {
-    var $container;
+var ui = {};
 
-    $container = $(options.ui.container);
-    if (!($container && $container.length === 1)) {
-        $container = $el.parent();
-    }
-    return $container;
-};
+(function ($, ui) {
+    "use strict";
 
-ui.findElement = function ($container, viewport, cssSelector) {
-    if (viewport) {
-        return $container.find(viewport).find(cssSelector);
-    }
-    return $container.find(cssSelector);
-};
+    ui.getContainer = function (options, $el) {
+        var $container;
 
-ui.getUIElements = function (options, $el) {
-    var $container, result;
+        $container = $(options.ui.container);
+        if (!($container && $container.length === 1)) {
+            $container = $el.parent();
+        }
+        return $container;
+    };
 
-    if (options.instances.viewports) {
-        return options.instances.viewports;
-    }
+    ui.findElement = function ($container, viewport, cssSelector) {
+        if (viewport) {
+            return $container.find(viewport).find(cssSelector);
+        }
+        return $container.find(cssSelector);
+    };
 
-    result = {};
-    $container = ui.getContainer(options, $el);
-    result.$progressbar = ui.findElement($container, options.ui.viewports.progress, "div.progress");
-    if (!options.ui.showPopover) {
-        result.$verdict = ui.findElement($container, options.ui.viewports.verdict, "span.password-verdict");
-        result.$errors = ui.findElement($container, options.ui.viewports.errors, "ul.error-list");
-    }
+    ui.getUIElements = function (options, $el) {
+        var $container, result;
 
-    options.instances.viewports = result;
-    return result;
-};
+        if (options.instances.viewports) {
+            return options.instances.viewports;
+        }
 
-ui.initProgressBar = function (options, $el) {
-    var $container = ui.getContainer(options, $el),
-        progressbar = "<div class='progress'><div class='";
+        result = {};
+        $container = ui.getContainer(options, $el);
+        result.$progressbar = ui.findElement($container, options.ui.viewports.progress, "div.progress");
+        if (!options.ui.showPopover) {
+            result.$verdict = ui.findElement($container, options.ui.viewports.verdict, "span.password-verdict");
+            result.$errors = ui.findElement($container, options.ui.viewports.errors, "ul.error-list");
+        }
 
-    if (!options.ui.bootstrap2) {
-        progressbar += "progress-";
-    }
-    progressbar += "bar'></div></div>";
+        options.instances.viewports = result;
+        return result;
+    };
 
-    if (options.ui.viewports.progress) {
-        $container.find(options.ui.viewports.progress).append(progressbar);
-    } else {
-        $(progressbar).insertAfter($el);
-    }
-};
+    ui.initProgressBar = function (options, $el) {
+        var $container = ui.getContainer(options, $el),
+            progressbar = "<div class='progress'><div class='";
 
-ui.initHelper = function (options, $el, html, viewport) {
-    var $container = ui.getContainer(options, $el);
-    if (viewport) {
-        $container.find(viewport).append(html);
-    } else {
-        $(html).insertAfter($el);
-    }
-};
+        if (!options.ui.bootstrap2) {
+            progressbar += "progress-";
+        }
+        progressbar += "bar'></div></div>";
 
-ui.initVerdict = function (options, $el) {
-    ui.initHelper(options, $el, "<span class='password-verdict'></span>",
-                    options.ui.viewports.verdict);
-};
+        if (options.ui.viewports.progress) {
+            $container.find(options.ui.viewports.progress).append(progressbar);
+        } else {
+            $(progressbar).insertAfter($el);
+        }
+    };
 
-ui.initErrorList = function (options, $el) {
-    ui.initHelper(options, $el, "<ul class='error-list'></ul>",
-                    options.ui.viewports.errors);
-};
+    ui.initHelper = function (options, $el, html, viewport) {
+        var $container = ui.getContainer(options, $el);
+        if (viewport) {
+            $container.find(viewport).append(html);
+        } else {
+            $(html).insertAfter($el);
+        }
+    };
 
-ui.initPopover = function (options, $el, verdictText) {
-    var placement = "auto top",
-        html = "";
+    ui.initVerdict = function (options, $el) {
+        ui.initHelper(options, $el, "<span class='password-verdict'></span>",
+                        options.ui.viewports.verdict);
+    };
 
-    if (options.ui.bootstrap2) { placement = "top"; }
+    ui.initErrorList = function (options, $el) {
+        ui.initHelper(options, $el, "<ul class='error-list'></ul>",
+                        options.ui.viewports.errors);
+    };
 
-    if (options.ui.showVerdicts && verdictText.length > 0) {
-        html = "<h5><span class='password-verdict'>" + verdictText +
-            "</span></h5>";
-    }
-    if (options.ui.showErrors) {
-        html += "<div><ul class='error-list'>";
+    ui.initPopover = function (options, $el, verdictText) {
+        var placement = "auto top",
+            html = "";
+
+        if (options.ui.bootstrap2) { placement = "top"; }
+
+        if (options.ui.showVerdicts && verdictText.length > 0) {
+            html = "<h5><span class='password-verdict'>" + verdictText +
+                "</span></h5>";
+        }
+        if (options.ui.showErrors) {
+            html += "<div><ul class='error-list'>";
+            $.each(options.instances.errors, function (idx, err) {
+                html += "<li>" + err + "</li>";
+            });
+            html += "</ul></div>";
+        }
+
+        $el.popover("destroy");
+        $el.popover({
+            html: true,
+            placement: placement,
+            trigger: "manual",
+            content: html
+        });
+        $el.popover("show");
+    };
+
+    ui.initUI = function (options, $el) {
+        if (!options.ui.showPopover) {
+            ui.initErrorList(options, $el);
+            ui.initVerdict(options, $el);
+        }
+        // The popover can't be initialized here, it requires to be destroyed
+        // and recreated every time its content changes, because it calculates
+        // its position based on the size of its content
+        ui.initProgressBar(options, $el);
+    };
+
+    ui.possibleProgressBarClasses = ["danger", "warning", "success"];
+
+    ui.updateProgressBar = function (options, $el, cssClass, percentage) {
+        var $progressbar = ui.getUIElements(options, $el).$progressbar,
+            $bar = $progressbar.find(".progress-bar"),
+            cssPrefix = "progress-";
+
+        if (options.ui.bootstrap2) {
+            $bar = $progressbar.find(".bar");
+            cssPrefix = "";
+        }
+
+        $.each(ui.possibleProgressBarClasses, function (idx, value) {
+            $bar.removeClass(cssPrefix + "bar-" + value);
+        });
+        $bar.addClass(cssPrefix + "bar-" + cssClass);
+        $bar.css("width", percentage + '%');
+    };
+
+    ui.updateVerdict = function (options, $el, text) {
+        var $verdict = ui.getUIElements(options, $el).$verdict;
+        $verdict.text(text);
+    };
+
+    ui.updateErrors = function (options, $el) {
+        var $errors = ui.getUIElements(options, $el).$errors,
+            html = "";
         $.each(options.instances.errors, function (idx, err) {
             html += "<li>" + err + "</li>";
         });
-        html += "</ul></div>";
-    }
+        $errors.html(html);
+    };
 
-    $el.popover("destroy");
-    $el.popover({
-        html: true,
-        placement: placement,
-        trigger: "manual",
-        content: html
-    });
-    $el.popover("show");
-};
+    ui.percentage = function (score, maximun) {
+        var result = Math.floor(100 * score / maximun);
+        result = result < 0 ? 0 : result;
+        result = result > 100 ? 100 : result;
+        return result;
+    };
 
-ui.initUI = function (options, $el) {
-    if (!options.ui.showPopover) {
-        ui.initErrorList(options, $el);
-        ui.initVerdict(options, $el);
-    }
-    // The popover can't be initialized here, it requires to be destroyed
-    // and recreated every time its content changes, because it calculates
-    // its position based on the size of its content
-    ui.initProgressBar(options, $el);
-};
+    ui.updateUI = function (options, $el, score) {
+        var barCss, barPercentage, verdictText;
 
-ui.possibleProgressBarClasses = ["danger", "warning", "success"];
-
-ui.updateProgressBar = function (options, $el, cssClass, percentage) {
-    var $progressbar = ui.getUIElements(options, $el).$progressbar,
-        $bar = $progressbar.find(".progress-bar"),
-        cssPrefix = "progress-";
-
-    if (options.ui.bootstrap2) {
-        $bar = $progressbar.find(".bar");
-        cssPrefix = "";
-    }
-
-    $.each(ui.possibleProgressBarClasses, function (idx, value) {
-        $bar.removeClass(cssPrefix + "bar-" + value);
-    });
-    $bar.addClass(cssPrefix + "bar-" + cssClass);
-    $bar.css("width", percentage + '%');
-};
-
-ui.updateVerdict = function (options, $el, text) {
-    var $verdict = ui.getUIElements(options, $el).$verdict;
-    $verdict.text(text);
-};
-
-ui.updateErrors = function (options, $el) {
-    var $errors = ui.getUIElements(options, $el).$errors,
-        html = "";
-    $.each(options.instances.errors, function (idx, err) {
-        html += "<li>" + err + "</li>";
-    });
-    $errors.html(html);
-};
-
-ui.percentage = function (score, maximun) {
-    var result = Math.floor(100 * score / maximun);
-    result = result < 0 ? 0 : result;
-    result = result > 100 ? 100 : result;
-    return result;
-};
-
-ui.updateUI = function (options, $el, score) {
-    var barCss, barPercentage, verdictText;
-
-    barPercentage = ui.percentage(score, options.ui.scores[3]);
-    if (score <= 0) {
-        barCss = "danger";
-        verdictText = "";
-    } else if (score < options.ui.scores[0]) {
-        barCss = "danger";
-        verdictText = options.ui.verdicts[0];
-    } else if (score < options.ui.scores[1]) {
-        barCss = "danger";
-        verdictText = options.ui.verdicts[1];
-    } else if (score < options.ui.scores[2]) {
-        barCss = "warning";
-        verdictText = options.ui.verdicts[2];
-    } else if (score < options.ui.scores[3]) {
-        barCss = "warning";
-        verdictText = options.ui.verdicts[3];
-    } else {
-        barCss = "success";
-        verdictText = options.ui.verdicts[4];
-    }
-
-    ui.updateProgressBar(options, $el, barCss, barPercentage);
-    if (options.ui.showPopover) {
-        // Popover can't be updated, it has to be recreated
-        ui.initPopover(options, $el, verdictText);
-    } else {
-        if (options.ui.showVerdicts) {
-            ui.updateVerdict(options, $el, verdictText);
+        barPercentage = ui.percentage(score, options.ui.scores[3]);
+        if (score <= 0) {
+            barCss = "danger";
+            verdictText = "";
+        } else if (score < options.ui.scores[0]) {
+            barCss = "danger";
+            verdictText = options.ui.verdicts[0];
+        } else if (score < options.ui.scores[1]) {
+            barCss = "danger";
+            verdictText = options.ui.verdicts[1];
+        } else if (score < options.ui.scores[2]) {
+            barCss = "warning";
+            verdictText = options.ui.verdicts[2];
+        } else if (score < options.ui.scores[3]) {
+            barCss = "warning";
+            verdictText = options.ui.verdicts[3];
+        } else {
+            barCss = "success";
+            verdictText = options.ui.verdicts[4];
         }
-        if (options.ui.showErrors) {
-            ui.updateErrors(options, $el);
+
+        ui.updateProgressBar(options, $el, barCss, barPercentage);
+        if (options.ui.showPopover) {
+            // Popover can't be updated, it has to be recreated
+            ui.initPopover(options, $el, verdictText);
+        } else {
+            if (options.ui.showVerdicts) {
+                ui.updateVerdict(options, $el, verdictText);
+            }
+            if (options.ui.showErrors) {
+                ui.updateErrors(options, $el);
+            }
         }
-    }
-};
+    };
+}(jQuery, ui));
 
 // Source: src/methods.js
 
 
 
 
-onKeyUp = function (event) {
-    var $el = $(event.target),
-        options = $el.data("pwstrength-bootstrap"),
-        word = $el.val(),
-        score;
+var methods = {};
 
-    options.instances.errors = [];
-    score = rulesEngine.executeRules(options, word);
-    ui.updateUI(options, $el, score);
+(function ($, methods) {
+    "use strict";
+    var onKeyUp, applyToAll;
 
-    if ($.isFunction(options.common.onKeyUp)) {
-        options.common.onKeyUp(event);
-    }
-};
-
-methods.init = function (settings) {
-    this.each(function (idx, el) {
-        // Make it deep extend (first param) so it extends too the
-        // rules and other inside objects
-        var clonedDefaults = $.extend(true, {}, defaultOptions),
-            localOptions = $.extend(true, clonedDefaults, settings),
-            $el = $(el);
-
-        localOptions.instances = {};
-        $el.data("pwstrength-bootstrap", localOptions);
-        $el.on("keyup", onKeyUp);
-        ui.initUI(localOptions, $el);
-        if ($.isFunction(localOptions.common.onLoad)) {
-            localOptions.common.onLoad();
-        }
-    });
-
-    return this;
-};
-
-methods.destroy = function () {
-    this.each(function (idx, el) {
-        var $el = $(el),
+    onKeyUp = function (event) {
+        var $el = $(event.target),
             options = $el.data("pwstrength-bootstrap"),
-            elements = ui.getUIElements(options, $el);
-        elements.$progressbar.remove();
-        elements.$verdict.remove();
-        elements.$errors.remove();
-        $el.removeData("pwstrength-bootstrap");
-    });
-};
+            word = $el.val(),
+            score;
 
-methods.forceUpdate = function () {
-    this.each(function (idx, el) {
-        var event = { target: el };
-        onKeyUp(event);
-    });
-};
+        options.instances.errors = [];
+        score = rulesEngine.executeRules(options, word);
+        ui.updateUI(options, $el, score);
 
-methods.addRule = function (name, method, score, active) {
-    this.each(function (idx, el) {
-        var options = $(el).data("pwstrength-bootstrap");
+        if ($.isFunction(options.common.onKeyUp)) {
+            options.common.onKeyUp(event);
+        }
+    };
 
-        options.rules.activated[name] = active;
-        options.rules.scores[name] = score;
-        options.rules.extra[name] = method;
-    });
-};
+    methods.init = function (settings) {
+        this.each(function (idx, el) {
+            // Make it deep extend (first param) so it extends too the
+            // rules and other inside objects
+            var clonedDefaults = $.extend(true, {}, defaultOptions),
+                localOptions = $.extend(true, clonedDefaults, settings),
+                $el = $(el);
 
-applyToAll = function (rule, prop, value) {
-    this.each(function (idx, el) {
-        $(el).data("pwstrength-bootstrap").rules[prop][rule] = value;
-    });
-};
+            localOptions.instances = {};
+            $el.data("pwstrength-bootstrap", localOptions);
+            $el.on("keyup", onKeyUp);
+            ui.initUI(localOptions, $el);
+            if ($.isFunction(localOptions.common.onLoad)) {
+                localOptions.common.onLoad();
+            }
+        });
 
-methods.changeScore = function (rule, score) {
-    applyToAll.call(this, rule, "scores", score);
-};
+        return this;
+    };
 
-methods.ruleActive = function (rule, active) {
-    applyToAll.call(this, rule, "activated", active);
-};
+    methods.destroy = function () {
+        this.each(function (idx, el) {
+            var $el = $(el),
+                options = $el.data("pwstrength-bootstrap"),
+                elements = ui.getUIElements(options, $el);
+            elements.$progressbar.remove();
+            elements.$verdict.remove();
+            elements.$errors.remove();
+            $el.removeData("pwstrength-bootstrap");
+        });
+    };
 
-$.fn.pwstrength = function (method) {
-    var result;
+    methods.forceUpdate = function () {
+        this.each(function (idx, el) {
+            var event = { target: el };
+            onKeyUp(event);
+        });
+    };
 
-    if (methods[method]) {
-        result = methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
-    } else if (typeof method === "object" || !method) {
-        result = methods.init.apply(this, arguments);
-    } else {
-        $.error("Method " +  method + " does not exist on jQuery.pwstrength-bootstrap");
-    }
+    methods.addRule = function (name, method, score, active) {
+        this.each(function (idx, el) {
+            var options = $(el).data("pwstrength-bootstrap");
 
-    return result;
-};
+            options.rules.activated[name] = active;
+            options.rules.scores[name] = score;
+            options.rules.extra[name] = method;
+        });
+    };
 
-// Source: src/closure-post.js
+    applyToAll = function (rule, prop, value) {
+        this.each(function (idx, el) {
+            $(el).data("pwstrength-bootstrap").rules[prop][rule] = value;
+        });
+    };
 
+    methods.changeScore = function (rule, score) {
+        applyToAll.call(this, rule, "scores", score);
+    };
+
+    methods.ruleActive = function (rule, active) {
+        applyToAll.call(this, rule, "activated", active);
+    };
+
+    $.fn.pwstrength = function (method) {
+        var result;
+
+        if (methods[method]) {
+            result = methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
+        } else if (typeof method === "object" || !method) {
+            result = methods.init.apply(this, arguments);
+        } else {
+            $.error("Method " +  method + " does not exist on jQuery.pwstrength-bootstrap");
+        }
+
+        return result;
+    };
+}(jQuery, methods));
 }(jQuery));

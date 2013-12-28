@@ -1,5 +1,5 @@
-/*jslint browser: true, sloppy: true, unparam: true */
-/*global methods, $, onKeyUp: true, ui, rulesEngine, defaultOptions, applyToAll: true */
+/*jslint browser: true, unparam: true */
+/*global jQuery, ui, rulesEngine, defaultOptions */
 
 /*
 * jQuery Password Strength plugin for Twitter Bootstrap
@@ -9,94 +9,101 @@
 * Dual licensed under the MIT and GPL licenses.
 */
 
-onKeyUp = function (event) {
-    var $el = $(event.target),
-        options = $el.data("pwstrength-bootstrap"),
-        word = $el.val(),
-        score;
+var methods = {};
 
-    options.instances.errors = [];
-    score = rulesEngine.executeRules(options, word);
-    ui.updateUI(options, $el, score);
+(function ($, methods) {
+    "use strict";
+    var onKeyUp, applyToAll;
 
-    if ($.isFunction(options.common.onKeyUp)) {
-        options.common.onKeyUp(event);
-    }
-};
-
-methods.init = function (settings) {
-    this.each(function (idx, el) {
-        // Make it deep extend (first param) so it extends too the
-        // rules and other inside objects
-        var clonedDefaults = $.extend(true, {}, defaultOptions),
-            localOptions = $.extend(true, clonedDefaults, settings),
-            $el = $(el);
-
-        localOptions.instances = {};
-        $el.data("pwstrength-bootstrap", localOptions);
-        $el.on("keyup", onKeyUp);
-        ui.initUI(localOptions, $el);
-        if ($.isFunction(localOptions.common.onLoad)) {
-            localOptions.common.onLoad();
-        }
-    });
-
-    return this;
-};
-
-methods.destroy = function () {
-    this.each(function (idx, el) {
-        var $el = $(el),
+    onKeyUp = function (event) {
+        var $el = $(event.target),
             options = $el.data("pwstrength-bootstrap"),
-            elements = ui.getUIElements(options, $el);
-        elements.$progressbar.remove();
-        elements.$verdict.remove();
-        elements.$errors.remove();
-        $el.removeData("pwstrength-bootstrap");
-    });
-};
+            word = $el.val(),
+            score;
 
-methods.forceUpdate = function () {
-    this.each(function (idx, el) {
-        var event = { target: el };
-        onKeyUp(event);
-    });
-};
+        options.instances.errors = [];
+        score = rulesEngine.executeRules(options, word);
+        ui.updateUI(options, $el, score);
 
-methods.addRule = function (name, method, score, active) {
-    this.each(function (idx, el) {
-        var options = $(el).data("pwstrength-bootstrap");
+        if ($.isFunction(options.common.onKeyUp)) {
+            options.common.onKeyUp(event);
+        }
+    };
 
-        options.rules.activated[name] = active;
-        options.rules.scores[name] = score;
-        options.rules.extra[name] = method;
-    });
-};
+    methods.init = function (settings) {
+        this.each(function (idx, el) {
+            // Make it deep extend (first param) so it extends too the
+            // rules and other inside objects
+            var clonedDefaults = $.extend(true, {}, defaultOptions),
+                localOptions = $.extend(true, clonedDefaults, settings),
+                $el = $(el);
 
-applyToAll = function (rule, prop, value) {
-    this.each(function (idx, el) {
-        $(el).data("pwstrength-bootstrap").rules[prop][rule] = value;
-    });
-};
+            localOptions.instances = {};
+            $el.data("pwstrength-bootstrap", localOptions);
+            $el.on("keyup", onKeyUp);
+            ui.initUI(localOptions, $el);
+            if ($.isFunction(localOptions.common.onLoad)) {
+                localOptions.common.onLoad();
+            }
+        });
 
-methods.changeScore = function (rule, score) {
-    applyToAll.call(this, rule, "scores", score);
-};
+        return this;
+    };
 
-methods.ruleActive = function (rule, active) {
-    applyToAll.call(this, rule, "activated", active);
-};
+    methods.destroy = function () {
+        this.each(function (idx, el) {
+            var $el = $(el),
+                options = $el.data("pwstrength-bootstrap"),
+                elements = ui.getUIElements(options, $el);
+            elements.$progressbar.remove();
+            elements.$verdict.remove();
+            elements.$errors.remove();
+            $el.removeData("pwstrength-bootstrap");
+        });
+    };
 
-$.fn.pwstrength = function (method) {
-    var result;
+    methods.forceUpdate = function () {
+        this.each(function (idx, el) {
+            var event = { target: el };
+            onKeyUp(event);
+        });
+    };
 
-    if (methods[method]) {
-        result = methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
-    } else if (typeof method === "object" || !method) {
-        result = methods.init.apply(this, arguments);
-    } else {
-        $.error("Method " +  method + " does not exist on jQuery.pwstrength-bootstrap");
-    }
+    methods.addRule = function (name, method, score, active) {
+        this.each(function (idx, el) {
+            var options = $(el).data("pwstrength-bootstrap");
 
-    return result;
-};
+            options.rules.activated[name] = active;
+            options.rules.scores[name] = score;
+            options.rules.extra[name] = method;
+        });
+    };
+
+    applyToAll = function (rule, prop, value) {
+        this.each(function (idx, el) {
+            $(el).data("pwstrength-bootstrap").rules[prop][rule] = value;
+        });
+    };
+
+    methods.changeScore = function (rule, score) {
+        applyToAll.call(this, rule, "scores", score);
+    };
+
+    methods.ruleActive = function (rule, active) {
+        applyToAll.call(this, rule, "activated", active);
+    };
+
+    $.fn.pwstrength = function (method) {
+        var result;
+
+        if (methods[method]) {
+            result = methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
+        } else if (typeof method === "object" || !method) {
+            result = methods.init.apply(this, arguments);
+        } else {
+            $.error("Method " +  method + " does not exist on jQuery.pwstrength-bootstrap");
+        }
+
+        return result;
+    };
+}(jQuery, methods));

@@ -1,5 +1,5 @@
 /*jslint browser: true, regexp: true, unparam: true */
-/*global $: true, module, require */
+/*global jQuery: true, module, require */
 
 /*
 * jQuery Password Strength plugin for Twitter Bootstrap
@@ -11,13 +11,14 @@
 
 var rulesEngine = {};
 
-if (!$ && module && module.exports) {
-    var $ = require("jquery");
-}
+try {
+    if (!jQuery && module && module.exports) {
+        var jQuery = require("jquery");
+    }
+} catch (ignore) {}
 
-(function (rulesEngine, $) {
+(function ($, rulesEngine) {
     "use strict";
-
     var validation = {};
 
     rulesEngine.forbiddenSequences = [
@@ -150,6 +151,10 @@ if (!$ && module && module.exports) {
 
         return totalScore;
     };
-}(rulesEngine, $));
+}(jQuery, rulesEngine));
 
-module.exports = rulesEngine;
+try {
+    if (module && module.exports) {
+        module.exports = rulesEngine;
+    }
+} catch (ignore) {}

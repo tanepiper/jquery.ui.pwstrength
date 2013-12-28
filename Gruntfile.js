@@ -11,7 +11,8 @@ module.exports = function (grunt) {
         '* Copyright (c) 2008-2013 Tane Piper\n' +
         '* Copyright (c) 2013 Alejandro Blanco\n' +
         '* Dual licensed under the MIT and GPL licenses.\n' +
-        '*/\n\n';
+        '*/\n\n' +
+        '(function (jQuery) {\n';
 
     // Project configuration
     grunt.initConfig({
@@ -20,7 +21,7 @@ module.exports = function (grunt) {
             client: {
                 src: [
                     'src/rules.js', 'src/options.js', 'src/ui.js',
-                    'src/methods.js', 'spec/*js'
+                    'src/methods.js', 'spec/*js', 'Gruntfile.js'
                 ],
                 directives: {
                     browser: true,
@@ -33,6 +34,7 @@ module.exports = function (grunt) {
         concat: {
             options: {
                 banner: license,
+                footer: '}(jQuery));',
                 process: function (src, filepath) {
                     // Remove ALL block comments, the stripBanners only removes
                     // the first one
@@ -41,7 +43,10 @@ module.exports = function (grunt) {
                 }
             },
             dist: {
-                src: ['src/closure-pre.js', 'src/rules.js', 'src/options.js', 'src/ui.js', 'src/methods.js', 'src/closure-post.js'],
+                src: [
+                    'src/rules.js', 'src/options.js', 'src/ui.js',
+                    'src/methods.js'
+                ],
                 dest: '<%= pkg.name %>-<%= pkg.version %>.js'
             }
         },
@@ -52,7 +57,9 @@ module.exports = function (grunt) {
             },
             dist: {
                 files: {
-                    '<%= pkg.name %>-<%= pkg.version %>.min.js': ['<%= concat.dist.dest %>']
+                    '<%= pkg.name %>-<%= pkg.version %>.min.js': [
+                        '<%= concat.dist.dest %>'
+                    ]
                 }
             }
         },
