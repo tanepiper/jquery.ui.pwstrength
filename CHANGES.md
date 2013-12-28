@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.0.1
+
+- Separate source file in several smaller files.
+- Add Grunt support for creating a bundle and a minified version.
+- Add tests for the rules engine, and continuos integration with Travis.
+
 ## 1.0.0
 
 - Complete refactor of the code. This is a cleaner version, easier to extend
