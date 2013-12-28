@@ -321,8 +321,8 @@ And go to [localhost:8000](http://localhost:8000).
 
 ## Build and Test
 
-The build and testing processes rely on [http://gruntjs.com/](Grunt). To use
-them you need to have [http://nodejs.org/](node.js) and grunt-cli installed on
+The build and testing processes rely on [Grunt](http://gruntjs.com/). To use
+them you need to have [node.js](http://nodejs.org/) and grunt-cli installed on
 your system. Assuming you have node.js in your Linux system, you'll need to do
 something like this:
 
@@ -358,9 +358,9 @@ npm install -d
 grunt test
 ```
 
-It will check all the source files with [http://jslint.com](JSLint) and run the
-tests, which are written with [http://jasmine.github.io/](Jasmine). You'll find
+It will check all the source files with [JSLint](http://jslint.com) and run the
+tests, which are written with [Jasmine](http://jasmine.github.io/). You'll find
 the tests source code in the `spec` directory.
 
-[https://travis-ci.org/ablanco/jquery.pwstrength.bootstrap](Travis) is being
+[Travis](https://travis-ci.org/ablanco/jquery.pwstrength.bootstrap) is being
 used for continuos integration. You can check there if the tests are passing.
