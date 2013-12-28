@@ -4,14 +4,21 @@
 module.exports = function (grunt) {
     "use strict";
 
+    var license =
+        '/*!\n' +
+        '* jQuery Password Strength plugin for Twitter Bootstrap\n' +
+        '*\n' +
+        '* Copyright (c) 2008-2013 Tane Piper\n' +
+        '* Copyright (c) 2013 Alejandro Blanco\n' +
+        '* Dual licensed under the MIT and GPL licenses.\n' +
+        '*/\n\n';
+
     // Project configuration
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         jslint: { // configure the task
             client: {
-                src: [
-                    'src/*.js'
-                ],
+                src: ['src/rules.js', 'src/options.js', 'src/ui.js', 'src/methods.js'],
                 directives: {
                     browser: true,
                     predef: [
@@ -22,10 +29,16 @@ module.exports = function (grunt) {
         },
         concat: {
             options: {
-                separator: ';'
+                banner: license,
+                process: function (src, filepath) {
+                    // Remove ALL block comments, the stripBanners only removes
+                    // the first one
+                    src = src.replace(/\/\*[\s\S]*?\*\//g, '');
+                    return '// Source: ' + filepath + src;
+                }
             },
             dist: {
-                src: ['src/*.js'],
+                src: ['src/closure-pre.js', 'src/rules.js', 'src/options.js', 'src/ui.js', 'src/methods.js', 'src/closure-post.js'],
                 dest: '<%= pkg.name %>-<%= pkg.version %>.js'
             }
         },
