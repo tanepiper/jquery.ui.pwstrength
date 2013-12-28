@@ -9,8 +9,7 @@
 (function ($) {
 "use strict";
 
-var rulesEngine = {},
-    validation = {},
+var module = { exports: '' },
     defaultOptions = {},
     ui = {},
     methods = {},

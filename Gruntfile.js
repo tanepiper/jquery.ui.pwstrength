@@ -18,7 +18,10 @@ module.exports = function (grunt) {
         pkg: grunt.file.readJSON('package.json'),
         jslint: { // configure the task
             client: {
-                src: ['src/rules.js', 'src/options.js', 'src/ui.js', 'src/methods.js'],
+                src: [
+                    'src/rules.js', 'src/options.js', 'src/ui.js',
+                    'src/methods.js', 'spec/*js'
+                ],
                 directives: {
                     browser: true,
                     predef: [
@@ -73,6 +76,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-jasmine-node');
 
+    grunt.registerTask('test', ['jslint', 'jasmine_node']);
+
     // Default task(s)
-    grunt.registerTask('default', ['jslint', 'concat', 'uglify', 'shell', 'jasmine_node']);
+    grunt.registerTask('default', ['jslint', 'concat', 'uglify', 'shell']);
 };
