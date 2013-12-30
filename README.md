@@ -96,7 +96,7 @@ Let's see the options of each section.
   Scores returned by the rules when they match. Negative values are for
   penalizations.
 
-*__activated__:
+* __activated__:
 
   Default: (Object)
 
