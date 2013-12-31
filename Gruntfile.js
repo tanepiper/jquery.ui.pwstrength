@@ -20,8 +20,7 @@ module.exports = function (grunt) {
         jslint: { // configure the task
             client: {
                 src: [
-                    'src/rules.js', 'src/options.js', 'src/ui.js',
-                    'src/methods.js', 'spec/*js', 'Gruntfile.js'
+                    'src/*js', 'spec/*js', 'Gruntfile.js'
                 ],
                 directives: {
                     browser: true,
