@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.0.2
+
+- Bugfix in UI initialization.
+- Fix typo in readme.
+
 ## 1.0.1
 
 - Separate source file in several smaller files.

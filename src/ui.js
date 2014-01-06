@@ -115,8 +115,8 @@ var ui = {};
 
     ui.initUI = function (options, $el) {
         if (!options.ui.showPopover) {
-            ui.initErrorList(options, $el);
-            ui.initVerdict(options, $el);
+            if (options.ui.showErrors) { ui.initErrorList(options, $el); }
+            if (options.ui.showVerdicts) { ui.initVerdict(options, $el); }
         }
         // The popover can't be initialized here, it requires to be destroyed
         // and recreated every time its content changes, because it calculates

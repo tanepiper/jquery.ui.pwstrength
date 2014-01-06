@@ -190,7 +190,7 @@ Let's see the options of each section.
 
   Determines if the verdicts are displayed with the progress bar or not.
 
-* __showVerdicts__:
+* __showErrors__:
 
   Default: `false` (Boolean)
 
