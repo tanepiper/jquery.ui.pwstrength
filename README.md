@@ -1,6 +1,7 @@
 # jQuery Password Strength Meter for Twitter Bootstrap
 
-[![Build Status](https://travis-ci.org/ablanco/jquery.pwstrength.bootstrap.png?branch=master)](https://travis-ci.org/ablanco/jquery.pwstrength.bootstrap) [![Code Climate](https://codeclimate.com/github/ablanco/jquery.pwstrength.bootstrap.png)](https://codeclimate.com/github/ablanco/jquery.pwstrength.bootstrap)
+[![Build Status](https://travis-ci.org/ablanco/jquery.pwstrength.bootstrap.png?branch=master)](https://travis-ci.org/ablanco/jquery.pwstrength.bootstrap)
+[![Code Climate](https://codeclimate.com/github/ablanco/jquery.pwstrength.bootstrap.png)](https://codeclimate.com/github/ablanco/jquery.pwstrength.bootstrap)
 
 The jQuery Password Strength Meter is a plugin for Twitter Bootstrap that
 provides rulesets for visualy displaying the quality of a users typed in
@@ -60,6 +61,17 @@ Let's see the options of each section.
 
   A callback function, fired on key up when the user is typing. The `keyup`
   event will be passed as an argument.
+
+* __zxcvbn__:
+
+  Default: `false` (Boolean)
+
+  Use the zxcvbn to calculate the password entropy and use it as the score. For
+  more information about zxcvbn plase check this
+  [post](https://tech.dropbox.com/2012/04/zxcvbn-realistic-password-strength-estimation/).
+
+  To use this option you must load the zxcvbn library file on your site. You'll
+  find it at their [repository](https://github.com/lowe/zxcvbn).
 
 ### Rules
 

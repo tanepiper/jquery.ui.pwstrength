@@ -174,6 +174,7 @@ defaultOptions.common.minChar = 6;
 defaultOptions.common.usernameField = "#username";
 defaultOptions.common.onLoad = undefined;
 defaultOptions.common.onKeyUp = undefined;
+defaultOptions.common.zxcvbn = false;
 
 defaultOptions.rules = {};
 defaultOptions.rules.extra = {};
@@ -457,7 +458,11 @@ var methods = {};
             score;
 
         options.instances.errors = [];
-        score = rulesEngine.executeRules(options, word);
+        if (options.common.zxcvbn) {
+            score = zxcvbn(word).entropy;
+        } else {
+            score = rulesEngine.executeRules(options, word);
+        }
         ui.updateUI(options, $el, score);
 
         if ($.isFunction(options.common.onKeyUp)) {

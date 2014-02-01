@@ -16,6 +16,7 @@ defaultOptions.common.minChar = 6;
 defaultOptions.common.usernameField = "#username";
 defaultOptions.common.onLoad = undefined;
 defaultOptions.common.onKeyUp = undefined;
+defaultOptions.common.zxcvbn = false;
 
 defaultOptions.rules = {};
 defaultOptions.rules.extra = {};

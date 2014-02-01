@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.1.0dev
+
+- Support zxcvbn for password scoring.
+
 ## 1.0.2
 
 - Bugfix in UI initialization.
