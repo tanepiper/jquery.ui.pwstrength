@@ -3,6 +3,8 @@
 ## 1.1.0dev
 
 - Support zxcvbn for password scoring.
+- Support showing the password strength as a validation status in the password
+  field.
 
 ## 1.0.2
 

@@ -162,6 +162,13 @@ Let's see the options of each section.
   Displays the error messages in a Bootstrap popover, instead of below the
   input field. Bootstrap tooltip.js and popover.js must to be included.
 
+* __showStatus__:
+
+  Default: `false` (Boolean)
+
+  Displays the password strength as a validation status in the password field,
+  for this to work, the Bootstrap form structure must be followed.
+
 * __spanError__:
 
   Default: (Function)

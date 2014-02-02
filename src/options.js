@@ -59,6 +59,7 @@ defaultOptions.rules.raisePower = 1.4;
 defaultOptions.ui = {};
 defaultOptions.ui.bootstrap2 = false;
 defaultOptions.ui.showPopover = false;
+defaultOptions.ui.showStatus = false;
 defaultOptions.ui.spanError = function (options, key) {
     "use strict";
     var text = options.ui.errorMessages[key];
