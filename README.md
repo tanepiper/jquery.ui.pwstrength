@@ -155,6 +155,12 @@ Let's see the options of each section.
   Sets if it supports legacy Bootstrap 2 (true) or the current Bootstrap 3
   (false), the progress bar html is different.
 
+* __showProgressBar__:
+
+  Default: `true` (Boolean)
+
+  Displays the password strength in a progress bar.
+
 * __showPopover__:
 
   Default: `false` (Boolean)

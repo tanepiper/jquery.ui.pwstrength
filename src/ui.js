@@ -124,7 +124,9 @@ var ui = {};
         // The popover can't be initialized here, it requires to be destroyed
         // and recreated every time its content changes, because it calculates
         // its position based on the size of its content
-        ui.initProgressBar(options, $el);
+        if (options.ui.showProgressBar) {
+            ui.initProgressBar(options, $el);
+        }
     };
 
     ui.possibleProgressBarClasses = ["danger", "warning", "success"];
@@ -184,7 +186,6 @@ var ui = {};
     ui.updateUI = function (options, $el, score) {
         var cssClass, barPercentage, verdictText;
 
-        barPercentage = ui.percentage(score, options.ui.scores[3]);
         if (score <= 0) {
             cssClass = 0;
             verdictText = "";
@@ -205,7 +206,10 @@ var ui = {};
             verdictText = options.ui.verdicts[4];
         }
 
-        ui.updateProgressBar(options, $el, cssClass, barPercentage);
+        if (options.ui.showProgressBar) {
+            barPercentage = ui.percentage(score, options.ui.scores[3]);
+            ui.updateProgressBar(options, $el, cssClass, barPercentage);
+        }
         if (options.ui.showStatus) {
             ui.updateFieldStatus(options, $el, cssClass);
         }

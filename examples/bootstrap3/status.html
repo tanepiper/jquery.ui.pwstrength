@@ -14,13 +14,8 @@
                         <label for="password">Password</label>
                         <input type="password" class="form-control" id="password" placeholder="Password">
                     </div>
+                    <span class="pwstrength_viewport_verdict"></span>
                 </div>
-                <div class="col-sm-6 col-sm-offset-2 my-help-text">
-                    <span class="pwstrength_viewport_progress"></span> <span class="pwstrength_viewport_verdict"></span>
-                </div>
-            </div>
-            <div class="row">
-                <div id="messages" class="col-sm-12"></div>
             </div>
         </form>
         <p><a href="..">Go back</a></p>
@@ -35,14 +30,9 @@
             options.ui = {
                 container: "#pwd-container",
                 showStatus: true,
+                showProgressBar: false,
                 viewports: {
-                    progress: ".pwstrength_viewport_progress",
                     verdict: ".pwstrength_viewport_verdict"
-                }
-            };
-            options.common = {
-                onLoad: function () {
-                    $('#messages').text('Start typing password');
                 }
             };
             $(':password').pwstrength(options);
