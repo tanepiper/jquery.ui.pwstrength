@@ -15,8 +15,8 @@
                         <input type="password" class="form-control" id="password" placeholder="Password">
                     </div>
                 </div>
-                <div class="col-sm-6 col-sm-offset-2 my-help-text">
-                    <span class="pwstrength_viewport_progress"></span> <span class="pwstrength_viewport_verdict"></span>
+                <div class="col-sm-6 col-sm-offset-2" style="padding-top: 30px;">
+                    <div class="pwstrength_viewport_progress"></div>
                 </div>
             </div>
             <div class="row">
@@ -34,9 +34,9 @@
             var options = {};
             options.ui = {
                 container: "#pwd-container",
+                showVerdictsInsideProgressBar: true,
                 viewports: {
-                    progress: ".pwstrength_viewport_progress",
-                    verdict: ".pwstrength_viewport_verdict"
+                    progress: ".pwstrength_viewport_progress"
                 }
             };
             options.common = {

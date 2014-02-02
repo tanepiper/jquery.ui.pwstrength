@@ -45,7 +45,11 @@ var ui = {};
         $container = ui.getContainer(options, $el);
         result.$progressbar = ui.findElement($container, options.ui.viewports.progress, "div.progress");
         if (!options.ui.showPopover) {
-            result.$verdict = ui.findElement($container, options.ui.viewports.verdict, "span.password-verdict");
+            if (options.ui.showVerdictsInsideProgressBar) {
+                result.$verdict = result.$progressbar.find("span.password-verdict");
+            } else {
+                result.$verdict = ui.findElement($container, options.ui.viewports.verdict, "span.password-verdict");
+            }
             result.$errors = ui.findElement($container, options.ui.viewports.errors, "ul.error-list");
         }
 
@@ -60,7 +64,11 @@ var ui = {};
         if (!options.ui.bootstrap2) {
             progressbar += "progress-";
         }
-        progressbar += "bar'></div></div>";
+        progressbar += "bar'>";
+        if (options.ui.showVerdictsInsideProgressBar) {
+            progressbar += "<span class='password-verdict'></span>";
+        }
+        progressbar += "</div></div>";
 
         if (options.ui.viewports.progress) {
             $container.find(options.ui.viewports.progress).append(progressbar);
@@ -119,7 +127,9 @@ var ui = {};
     ui.initUI = function (options, $el) {
         if (!options.ui.showPopover) {
             if (options.ui.showErrors) { ui.initErrorList(options, $el); }
-            if (options.ui.showVerdicts) { ui.initVerdict(options, $el); }
+            if (options.ui.showVerdicts && !options.ui.showVerdictsInsideProgressBar) {
+                ui.initVerdict(options, $el);
+            }
         }
         // The popover can't be initialized here, it requires to be destroyed
         // and recreated every time its content changes, because it calculates
@@ -217,7 +227,7 @@ var ui = {};
             // Popover can't be updated, it has to be recreated
             ui.initPopover(options, $el, verdictText);
         } else {
-            if (options.ui.showVerdicts) {
+            if (options.ui.showVerdictsInsideProgressBar || options.ui.showVerdicts) {
                 ui.updateVerdict(options, $el, verdictText);
             }
             if (options.ui.showErrors) {

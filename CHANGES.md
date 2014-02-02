@@ -6,6 +6,7 @@
 - Support showing the password strength as a validation status in the password
   field.
 - Support hiding the progress bar, making it optional.
+- Support showing the verdicts inside the progress bar.
 
 ## 1.0.2
 

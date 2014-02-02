@@ -219,6 +219,14 @@ Let's see the options of each section.
 
   Determines if the verdicts are displayed with the progress bar or not.
 
+* __showVerdictsInsideProgressBar__:
+
+  Default: `false` (Boolean)
+
+  Determines if the verdicts are displayed inside the progress bar or not. When
+  this setting is active, the verdict viewport is ignored. This option
+  overrides the value of the _showVerdicts_ one.
+
 * __showErrors__:
 
   Default: `false` (Boolean)
