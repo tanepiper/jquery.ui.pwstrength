@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.0dev
+## 1.1.0
 
 - Support zxcvbn for password scoring.
 - Support showing the password strength as a validation status in the password
