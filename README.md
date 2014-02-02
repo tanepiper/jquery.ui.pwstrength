@@ -70,6 +70,10 @@ Let's see the options of each section.
   more information about zxcvbn plase check this
   [post](https://tech.dropbox.com/2012/04/zxcvbn-realistic-password-strength-estimation/).
 
+  If you activate this setting, then all the rules won't be applied, and all
+  the options under the _Rules_ section will be ignored as well. zxcvbn will be
+  used instead of the default rules engine.
+
   To use this option you must load the zxcvbn library file on your site. You'll
   find it at their [repository](https://github.com/lowe/zxcvbn).
 
