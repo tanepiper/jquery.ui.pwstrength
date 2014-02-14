@@ -19,11 +19,12 @@ var methods = {};
         var $el = $(event.target),
             options = $el.data("pwstrength-bootstrap"),
             word = $el.val(),
-            score;
+            score,
+            username = [ $(options.common.usernameField).val() ];
 
         options.instances.errors = [];
         if (options.common.zxcvbn) {
-            score = zxcvbn(word).entropy;
+            score = zxcvbn(word, username).entropy;
         } else {
             score = rulesEngine.executeRules(options, word);
         }
