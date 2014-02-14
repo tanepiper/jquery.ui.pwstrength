@@ -1,0 +1,8 @@
+Authors ordered by first contribution.
+
+Tane Piper <piper.tane@gmail.com>
+Alejandro Blanco <alejandro.b.e@gmail.com>
+Victor "Skakruk" <skakruk15@gmail.com>
+Dameon87 <https://github.com/Dameon87>
+Maximilian Meister <mmeister@suse.de>
+André Durão <andreluisdurao@gmail.com>

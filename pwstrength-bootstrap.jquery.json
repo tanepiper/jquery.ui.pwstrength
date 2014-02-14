@@ -1,0 +1,40 @@
+{
+    "name": "pwstrength-bootstrap",
+    "title": "jQuery Password Strength Meter for Twitter Bootstrap",
+    "description": "jQuery plugin for Twitter Bootstrap that provides rulesets for visualy displaying the quality of a users typed in password.",
+    "keywords": [
+        "bootstrap",
+        "password",
+        "strength",
+        "meter"
+    ],
+    "version": "1.1.0",
+    "author": {
+        "name": "Alejandro Blanco other contributors",
+        "url": "https://github.com/ablanco/jquery.pwstrength.bootstrap/blob/1.1.0/AUTHORS.txt"
+    },
+    "maintainers": [
+        {
+            "name": "Alejandro Blanco",
+            "email": "alejandro.b.e@gmail.com",
+            "url": "http://mensab.com"
+        }
+    ],
+    "licenses": [
+        {
+            "type": "GPLv3",
+            "url": "https://github.com/ablanco/jquery.pwstrength.bootstrap/blob/1.1.0/GPL-LICENSE.txt"
+        },
+        {
+            "type": "MIT",
+            "url": "https://github.com/ablanco/jquery.pwstrength.bootstrap/blob/1.1.0/MIT-LICENSE.txt"
+        }
+    ],
+    "bugs": "https://github.com/ablanco/jquery.pwstrength.bootstrap/issues",
+    "homepage": "https://github.com/ablanco/jquery.pwstrength.bootstrap",
+    "docs": "https://github.com/ablanco/jquery.pwstrength.bootstrap/blob/1.1.0/README.md",
+    "download": "https://github.com/ablanco/jquery.pwstrength.bootstrap/releases",
+    "dependencies": {
+        "jquery": ">=1.7"
+    }
+}
