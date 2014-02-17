@@ -6,6 +6,7 @@
   into consideration when scoring the password.
 - Add a debug option, so the score gets printed in the JS console.
 - Check reversed sequences too in the sequences rule.
+- Fix the popover flickering.
 
 ## 1.1.0
 
