@@ -22,8 +22,8 @@ try {
     var validation = {};
 
     rulesEngine.forbiddenSequences = [
-        "0123456789", "9876543210", "abcdefghijklmnopqrstuvxywz",
-        "qwertyuiop", "asdfghjkl", "zxcvbnm"
+        "0123456789", "abcdefghijklmnopqrstuvxywz", "qwertyuiop", "asdfghjkl",
+        "zxcvbnm", "!@#$%^&*()_+"
     ];
 
     validation.wordNotEmail = function (options, word, score) {
@@ -74,12 +74,15 @@ try {
         var found = false,
             j;
         if (word.length > 2) {
-            $.each(rulesEngine.forbiddenSequences, function (idx, sequence) {
-                for (j = 0; j < (word.length - 3); j += 1) { //iterate the word trough a sliding window of size 3:
-                    if (sequence.indexOf(word.toLowerCase().substring(j, j + 3)) > -1) {
-                        found = true;
+            $.each(rulesEngine.forbiddenSequences, function (idx, seq) {
+                var sequences = [seq, seq.split('').reverse().join('')];
+                $.each(sequences, function (idx, sequence) {
+                    for (j = 0; j < (word.length - 3); j += 1) { //iterate the word trough a sliding window of size 3:
+                        if (sequence.indexOf(word.toLowerCase().substring(j, j + 3)) > -1) {
+                            found = true;
+                        }
                     }
-                }
+                });
             });
             if (found) {
                 options.instances.errors.push(options.ui.spanError(options, "sequence_found"));

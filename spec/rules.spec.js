@@ -72,14 +72,14 @@
                 .toEqual(19.379173679952558);
         });
 
-        it('to a mixed "wordsand19283746"', function () {
-            var password = 'wordsand19283746';
+        it('to a mixed "charsand19283746"', function () {
+            var password = 'charsand19283746';
             expect(rulesEngine.executeRules(options, password))
                 .toEqual(59.50293012833273);
         });
 
         it('to one with upper cases', function () {
-            var password = 'QAZwsxEDCrfv';
+            var password = 'QAZwsxTGByhn';
             expect(rulesEngine.executeRules(options, password))
                 .toEqual(38.423040924494714);
         });
@@ -106,6 +106,12 @@
             var password = 'qwertypasswdisbad';
             expect(rulesEngine.executeRules(options, password))
                 .toEqual(3.799339527161436);
+        });
+
+        it('to one with reversed sequences', function () {
+            var password = '0987ytrewqisbad';
+            expect(rulesEngine.executeRules(options, password))
+                .toEqual(5.312654085941652);
         });
 
         it('to one with an email', function () {
