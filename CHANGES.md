@@ -5,6 +5,7 @@
 - Pass the username field content to the zxcvbn function, so zxcvbn takes it
   into consideration when scoring the password.
 - Add a debug option, so the score gets printed in the JS console.
+- Check reversed sequences too in the sequences rule.
 
 ## 1.1.0
 
