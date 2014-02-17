@@ -1,5 +1,5 @@
 /*jslint browser: true, unparam: true */
-/*global jQuery, ui, rulesEngine, defaultOptions, zxcvbn */
+/*global jQuery, ui, rulesEngine, defaultOptions, zxcvbn, console */
 
 /*
 * jQuery Password Strength plugin for Twitter Bootstrap
@@ -34,6 +34,8 @@ var methods = {};
             score = rulesEngine.executeRules(options, word);
         }
         ui.updateUI(options, $el, score);
+
+        if (options.common.debug) { console.log(score); }
 
         if ($.isFunction(options.common.onKeyUp)) {
             options.common.onKeyUp(event);

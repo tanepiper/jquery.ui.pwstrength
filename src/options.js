@@ -17,6 +17,7 @@ defaultOptions.common.usernameField = "#username";
 defaultOptions.common.onLoad = undefined;
 defaultOptions.common.onKeyUp = undefined;
 defaultOptions.common.zxcvbn = false;
+defaultOptions.common.debug = false;
 
 defaultOptions.rules = {};
 defaultOptions.rules.extra = {};

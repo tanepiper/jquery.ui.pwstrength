@@ -77,6 +77,13 @@ Let's see the options of each section.
   To use this option you must load the zxcvbn library file on your site. You'll
   find it at their [repository](https://github.com/lowe/zxcvbn).
 
+* __debug__:
+
+  Default: `false` (Boolean)
+
+  If true, it prints the password strength in the javascript console, so you
+  can test and tune your rules settings.
+
 ### Rules
 
 * __extra__:

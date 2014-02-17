@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.1.1dev
+
+- Pass the username field content to the zxcvbn function, so zxcvbn takes it
+  into consideration when scoring the password.
+- Add a debug option, so the score gets printed in the JS console.
+
 ## 1.1.0
 
 - Support zxcvbn for password scoring.
