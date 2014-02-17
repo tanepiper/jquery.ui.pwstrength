@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.1dev
+## 1.1.1
 
 - Pass the username field content to the zxcvbn function, so zxcvbn takes it
   into consideration when scoring the password.
