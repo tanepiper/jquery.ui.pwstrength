@@ -96,44 +96,25 @@ var ui = {};
                         options.ui.viewports.errors);
     };
 
-    ui.initPopover = function (options, $el, verdictText) {
-        var placement = "auto top",
-            html = "";
-
-        if (options.ui.bootstrap2) { placement = "top"; }
-
-        if (options.ui.showVerdicts && verdictText.length > 0) {
-            html = "<h5><span class='password-verdict'>" + verdictText +
-                "</span></h5>";
-        }
-        if (options.ui.showErrors) {
-            html += "<div><ul class='error-list'>";
-            $.each(options.instances.errors, function (idx, err) {
-                html += "<li>" + err + "</li>";
-            });
-            html += "</ul></div>";
-        }
-
+    ui.initPopover = function (options, $el) {
         $el.popover("destroy");
         $el.popover({
             html: true,
-            placement: placement,
+            placement: "bottom",
             trigger: "manual",
-            content: html
+            content: " "
         });
-        $el.popover("show");
     };
 
     ui.initUI = function (options, $el) {
-        if (!options.ui.showPopover) {
+        if (options.ui.showPopover) {
+            ui.initPopover(options, $el);
+        } else {
             if (options.ui.showErrors) { ui.initErrorList(options, $el); }
             if (options.ui.showVerdicts && !options.ui.showVerdictsInsideProgressBar) {
                 ui.initVerdict(options, $el);
             }
         }
-        // The popover can't be initialized here, it requires to be destroyed
-        // and recreated every time its content changes, because it calculates
-        // its position based on the size of its content
         if (options.ui.showProgressBar) {
             ui.initProgressBar(options, $el);
         }
@@ -170,6 +151,33 @@ var ui = {};
             html += "<li>" + err + "</li>";
         });
         $errors.html(html);
+    };
+
+    ui.updatePopover = function (options, $el, verdictText) {
+        var popover = $el.data("bs.popover"),
+            html = "";
+
+        if (options.ui.showVerdicts && verdictText.length > 0) {
+            html = "<h5><span class='password-verdict'>" + verdictText +
+                "</span></h5>";
+        }
+        if (options.ui.showErrors) {
+            html += "<div><ul class='error-list'>";
+            $.each(options.instances.errors, function (idx, err) {
+                html += "<li>" + err + "</li>";
+            });
+            html += "</ul></div>";
+        }
+
+        if (options.ui.bootstrap2) { popover = $el.data("popover"); }
+
+        if (popover.hasOwnProperty("$arrow")) {
+            $el.find("+ .popover .popover-content").html(html);
+        } else {
+            // Hasn't been shown yet
+            popover.options.content = html;
+            $el.popover("show");
+        }
     };
 
     ui.updateFieldStatus = function (options, $el, cssClass) {
@@ -224,8 +232,7 @@ var ui = {};
             ui.updateFieldStatus(options, $el, cssClass);
         }
         if (options.ui.showPopover) {
-            // Popover can't be updated, it has to be recreated
-            ui.initPopover(options, $el, verdictText);
+            ui.updatePopover(options, $el, verdictText);
         } else {
             if (options.ui.showVerdictsInsideProgressBar || options.ui.showVerdicts) {
                 ui.updateVerdict(options, $el, verdictText);
