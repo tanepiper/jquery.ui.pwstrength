@@ -365,6 +365,9 @@ var ui = {};
         if (options.ui.showProgressBar) {
             ui.initProgressBar(options, $el);
         }
+        if ($el.val()) {
+            $el.pwstrength('forceUpdate');
+        }
     };
 
     ui.possibleProgressBarClasses = ["danger", "warning", "success"];
