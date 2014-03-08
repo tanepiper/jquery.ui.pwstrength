@@ -13,7 +13,9 @@ var rulesEngine = {};
 
 try {
     if (!jQuery && module && module.exports) {
-        var jQuery = require("jquery");
+        var jQuery = require("jquery"),
+            jsdom = require("jsdom").jsdom;
+        jQuery = jQuery(jsdom().parentWindow);
     }
 } catch (ignore) {}
 

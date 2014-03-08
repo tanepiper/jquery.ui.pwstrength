@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.1.2dev
+
+- Upgrade dev dependencies: grunt-contrib-uglify and jquery
+
 ## 1.1.1
 
 - Pass the username field content to the zxcvbn function, so zxcvbn takes it
