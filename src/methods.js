@@ -53,7 +53,12 @@ var methods = {};
             localOptions.instances = {};
             $el.data("pwstrength-bootstrap", localOptions);
             $el.on("keyup", onKeyUp);
+
             ui.initUI(localOptions, $el);
+            if ($el.val().trim()) { // Not empty, calculate the strength
+                $el.trigger("keyup");
+            }
+
             if ($.isFunction(localOptions.common.onLoad)) {
                 localOptions.common.onLoad();
             }
