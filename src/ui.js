@@ -216,23 +216,25 @@ var ui = {};
         var cssClass, barPercentage, verdictText;
 
         if (score <= 0) {
-            cssClass = 0;
             verdictText = "";
         } else if (score < options.ui.scores[0]) {
-            cssClass = 0;
             verdictText = options.ui.verdicts[0];
         } else if (score < options.ui.scores[1]) {
-            cssClass = 0;
             verdictText = options.ui.verdicts[1];
         } else if (score < options.ui.scores[2]) {
-            cssClass = 1;
             verdictText = options.ui.verdicts[2];
         } else if (score < options.ui.scores[3]) {
-            cssClass = 1;
             verdictText = options.ui.verdicts[3];
         } else {
-            cssClass = 2;
             verdictText = options.ui.verdicts[4];
+        }
+
+        if (score < options.ui.colors[0]) {
+            cssClass = 0;
+        } else if (score < options.ui.colors[1]) {
+            cssClass = 1;
+        } else {
+            cssClass = 2;
         }
 
         if (options.ui.showProgressBar) {
