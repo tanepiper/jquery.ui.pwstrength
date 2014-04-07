@@ -267,9 +267,15 @@ Let's see the options of each section.
 
 * __scores__:
 
-  Default: `[17, 26, 40, 50]` (Array)
+  Default: `[14, 26, 40, 50]` (Array)
 
-  The scores used to determine what progressClass and verdicts to display.
+  The scores used to determine what verdicts to display.
+
+* __colors__:
+
+  Default: `[26, 50]` (Array)
+
+  The scores used to determine what progressClass to display.
 
 #### Example of an options object
 

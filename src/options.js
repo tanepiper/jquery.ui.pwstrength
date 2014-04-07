@@ -86,3 +86,4 @@ defaultOptions.ui.viewports = {
     errors: undefined
 };
 defaultOptions.ui.scores = [14, 26, 38, 50];
+defaultOptions.ui.colors = [26, 50];
