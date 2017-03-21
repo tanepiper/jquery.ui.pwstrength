@@ -44,6 +44,16 @@ try {
         }
         return lenScore;
     };
+    
+    validation.wordLengthStaticScore = function (options, word, score) {
+        var wordlen = word.length;
+        if (wordlen < options.common.minChar){
+			options.instances.errors.push(options.ui.spanError(options, "password_too_short"));
+			return 0;
+		}
+        
+        return score;
+    };
 
     validation.wordSimilarToUsername = function (options, word, score) {
         var username = $(options.common.usernameField).val();
