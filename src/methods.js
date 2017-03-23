@@ -110,6 +110,28 @@ var methods = {};
         applyToAll.call(this, rule, "activated", active);
     };
 
+	methods.isRuleMatched = function (rule) {
+
+    	if ($.isFunction(rulesEngine.validation[rule])){
+    		
+    		if (rule == 'wordLength'){
+    			rule = 'wordLengthStaticScore';
+    		}
+    		
+    		var rulesMetCnt=0;
+    		 
+    		this.each(function(idx, el){
+    			var options =  $(el).data("pwstrength-bootstrap");
+
+    			rulesMetCnt += rulesEngine.validation[rule](options, $(el).val(), 1);
+    		});
+    		
+    		return rulesMetCnt == this.length;
+    	} else {
+    		$.error("Rule " +  rule + " does not exist on jQuery.pwstrength-bootstrap.validation");
+    	}	
+    }
+
     $.fn.pwstrength = function (method) {
         var result;
 
